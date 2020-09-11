@@ -7,9 +7,9 @@ let speed = parseInt(target.actor.data.data.attributes.speed.value);
 if (!target.getFlag('world', 'bootsOfSpeed')) {
     let newSpeed = (speed * 2) + "ft";
     ActorUpdate.execute(args[1], {"data.attributes.speed.value": newSpeed});
-    TokenSetFlag.execute(args[1], 'world', 'bootsOfSpeed', speed);
+    ActorSetFlag.execute(args[1], 'world', 'bootsOfSpeed', speed);
 } else {
     let newSpeed = target.getFlag('world', 'bootsOfSpeed')
     ActorUpdate.execute(args[1],{"data.attributes.speed.value": (newSpeed + "ft")});
-    TokenUnSetFlag.execute(args[1],'world', 'bootsOfSpeed');
+    ActorUnSetFlag.execute(args[1],'world', 'bootsOfSpeed');
 }

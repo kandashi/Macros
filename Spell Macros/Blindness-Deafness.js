@@ -30,7 +30,7 @@ if (args[0] === "on") {
     }
 }
 
-
+//new
 let target = canvas.tokens.get(args[1]);
 if (args[0] === "on") {
     new Dialog({
@@ -50,7 +50,8 @@ if (args[0] === "on") {
             }
         },
     }).render(true);
-} else {
+}
+if(args[0] === "off"){
     if (target.getFlag('world', 'DE Blinded')) {
         game.macros.getName("BlindExecute").execute("Blinded", args[1], 2 )
     } else if (target.getFlag('world', 'DE Deafened')) {
@@ -58,16 +59,22 @@ if (args[0] === "on") {
     }
 }
 
+//BlindeExectue macro
 let target = canvas.tokens.get(args[1]);
+let ActorSetFlag = game.macros.getName("ActorSetFlag");
+let ActorUnSetFlag = game.macros.getName("ActorUnSetFlag");
+
+
 if (args[2] === 1){
     game.cub.applyCondition(args[0], target)
     let flag = "DE " + args[0]
-    target.setFlag('world', flag, 1)
+    ActorSetFlag.execute(args[1], 'world', flag, 1)
+    ChatMessage.Create({content: target.name + " has been " + args[0]})
 } else {
     if(args[2] === 2){
-        console.log("test")
         let flag = "DE " + args[0]
         game.cub.removeCondition(args[0], target);
-        target.unsetFlag('world', flag)
+        ChatMessage.Create({content: target.name + " is no longer " + args[0]})
+        ActorUnSetFlag.execute(args[1], 'world', flag)
     }
 }

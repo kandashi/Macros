@@ -3,8 +3,8 @@ let originalSize = target.data.width;
 let mwak = target.actor.data.data.bonuses.mwak.damage
 let ActorUpdate = game.macros.getName("ActorUpdate");
 let TokenUpdate = game.macros.getName("TokenUpdate");
-let TokenSetFlag = game.macros.getName("TokenSetFlag");
-let TokenUnSetFlag = game.macros.getName("TokenUnSetFlag");
+let TokenSetFlag = game.macros.getName("ActorSetFlag");
+let TokenUnSetFlag = game.macros.getName("ActorUnSetFlag");
 if (args[0] === "on" && !target.getFlag('world', 'enlageReduceSpell')) {
     if (target) {
         new Dialog({

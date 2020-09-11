@@ -8,9 +8,9 @@ if (!target.getFlag('world', 'bootsOfStriding')) {
     let newSpeed = (speed < 30) ? 30 : speed;
     console.log(newSpeed)
     ActorUpdate.execute(args[1], { "data.attributes.speed.value": (newSpeed + "ft") });
-    TokenSetFlag.execute(args[1], 'world', 'bootsOfStriding', speed);
+    ActorSetFlag.execute(args[1], 'world', 'bootsOfStriding', speed);
 } else if (target.getFlag('world', 'bootsOfStriding')) {
     let newSpeed = target.getFlag('world', 'bootsOfStriding')
     ActorUpdate.execute(args[1], { "data.attributes.speed.value": (newSpeed + "ft") });
-    TokenUnSetFlag.execute(args[1], 'world', 'bootsOfStriding');
+    TActorUnSetFlag.execute(args[1], 'world', 'bootsOfStriding');
 }

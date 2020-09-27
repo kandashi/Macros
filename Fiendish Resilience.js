@@ -1,6 +1,6 @@
+console.log("Fiendish Resiliance hook active")
 function fiendishResilience (actorData, a) {
     let actor = game.actors.get(actorData.actor.data._id)
-    console.log(actor)
     let feature = actor.items.find(i => i.name === "Fiendish Resilience")
     if (feature !== null) {
         // Dialog to select damage type for the new day
@@ -38,7 +38,6 @@ function fiendishResilience (actorData, a) {
                             let obj = {};
                             let oldElement = actor.getFlag('world', 'FiendishResilience')
                             let newResistance = duplicate(actor.data.data.traits.dr);
-                            console.log(newResistance)
                             const index = newResistance.value.indexOf(oldElement)
                             newResistance.value.splice(index, 1)
                             let element = html.find('#element').val();

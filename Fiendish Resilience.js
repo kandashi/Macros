@@ -1,8 +1,9 @@
-Hooks.on("closeLongRestDialog", (actorData, a) => {
+function fiendishResilience (actorData, a) {
     let actor = game.actors.get(actorData.actor.data._id)
     console.log(actor)
     let feature = actor.items.find(i => i.name === "Fiendish Resilience")
     if (feature !== null) {
+        // Dialog to select damage type for the new day
         new Dialog({
             title: 'Fiendish Resilience',
             content: `
@@ -31,6 +32,8 @@ Hooks.on("closeLongRestDialog", (actorData, a) => {
                     icon: '<i class="fas fa-check"></i>',
                     label: 'Apply',
                     callback: (html) => {
+                        /// if the actor already has a Fiendish Resilience resistance on selection of the new resistance it will 
+                        
                         if (actor.getFlag('world', 'FiendishResilience')) {
                             let obj = {};
                             let oldElement = actor.getFlag('world', 'FiendishResilience')
@@ -63,4 +66,7 @@ Hooks.on("closeLongRestDialog", (actorData, a) => {
             },
         }).render(true);
     }
-})
+}
+
+Hooks.on("closeLongRestDialog", fiendishResilience);
+Hooks.on("closeShortRestDialog", fiendishResilience);

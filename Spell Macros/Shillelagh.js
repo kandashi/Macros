@@ -31,8 +31,15 @@ if (args[0] === "on" && !target.getFlag('world', 'shillelagh')) {
                     let item = token.actor.items.get(itemId);
                     console.log(item)
                     let copy_item = duplicate(item);
-                    ActorSetFlag.execute(args[1], `world`, `shillelagh`, itemId);
-                    copy_item.data.damage.parts[0][0] = "1d8 +@mod";
+                    ActorSetFlag.execute(args[1], `world`, `shillelagh`, {
+                        id : itemId,
+                        damage : copy_item.data.damage.parts[0][0]    
+                    });
+                    let damage = copy_item.data.damage.parts[0][0]
+                    console.log(typeof damage)
+                    var newdamage = damage.replace(/1d(4|6)/g,"1d8");
+                    console.log(newdamage)
+                    copy_item.data.damage.parts[0][0] = newdamage;
                     copy_item.data.ability = "wis"
                     target.actor.updateEmbeddedEntity("OwnedItem", copy_item);
                     ChatMessage.create({content: copy_item.name + " is empowered"})
@@ -47,10 +54,12 @@ if (args[0] === "on" && !target.getFlag('world', 'shillelagh')) {
 }
 
 if (args[0] === "off") {
-    let itemId = target.actor.getFlag(`world`, `shillelagh`);
+    let flag = target.actor.getFlag(`world`, `shillelagh`);
+    let itemId = flag.id;
+    let damage = flag.damage;
     let item = token.actor.items.get(itemId);
     let copy_item = duplicate(item);
-    copy_item.data.damage.parts[0][0] = "1d6 +@mod";
+    copy_item.data.damage.parts[0][0] = damage;
     copy_item.data.ability = ""
     target.actor.updateEmbeddedEntity("OwnedItem", copy_item);
     ActorUnSetFlag.execute(args[1], `world`, `shillelagh`);

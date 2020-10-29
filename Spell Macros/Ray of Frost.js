@@ -10,9 +10,8 @@ if (args[0] === "on") {
     ActorSetFlag.execute(args[1], 'world', 'rayOfFrost', speed)
     ActorUpdate.execute(args[1], { "data.attributes.speed.value" : (newSpeed + " ft") })
     ChatMessage.create({content: target.name + " has their speed decreased by 10ft"})
-} 
-if(args[0] === "off") {
-    let newSpeed = target.actor.getFlag('world', 'rayOfFrost');
-    ActorUpdate.execute(args[1], { "data.attributes.speed.value" : newSpeed });
+} else {
+    let newSpeed = speed + 10;
+    ActorUpdate.execute(args[1], { "data.attributes.speed.value" : newSpeed + "ft"});
     ActorUnSetFlag.execute(args[1], 'world', 'rayOfFrost')
 }

@@ -27,6 +27,33 @@ async function choose(options = [], prompt = ``) {
     if (choice === "darkvisionSpell") {
         SpellOff.execute("Darkvision")
     } 
+    if (choice === "elementalWeapon") {
+        SpellOff.execute("Darkvision")
+    } 
+    if (choice === "enhanceAbility") {
+        SpellOff.execute("Enhance Ability")
+    } 
+    if (choice === "EyebiteSpell") {
+        SpellOff.execute("Eyebite")
+    } 
+    if (choice === "FireShield") {
+        SpellOff.execute("FireShield")
+    } 
+    if (choice === "Haste") {
+        SpellOff.execute("HasteSpell")
+    } 
+    if (choice === "HeroesFeast") {
+        SpellOff.execute("HeroesFeast")
+    } 
+    if (choice === "ProtectionFromEnergy") {
+        SpellOff.execute("ProtectionFromEnergy")
+    } 
+    if (choice === "magicWeapon") {
+        SpellOff.execute("Magic Weapon")
+    } 
+    if (choice === "banishment") {
+        SpellOff.execute("Banishment")
+    } 
      if (choice === "enlageReduceSpell") {
         SpellOff.execute("EnlargeReduce")
     } 
@@ -41,5 +68,8 @@ async function choose(options = [], prompt = ``) {
     } 
      if (choice === "shillelagh") {
         SpellOff.execute("Shillelagh")
+    }
+    if (choice === "AlterSelfSpell") {
+        SpellOff.execute("Alter Self")
     }
 })();

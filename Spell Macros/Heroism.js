@@ -69,22 +69,22 @@ if (args[0] === "off" && hookIdFlag) {
 
 
 
-let target = canvas.tokens.get(args[1]);
+
 let mod = args[2];
 let ActorUpdate = game.macros.getName("ActorUpdate");
 let ActorSetFlag = game.macros.getName("ActorSetFlag");
 let ActorUnSetFlag = game.macros.getName("ActorUnSetFlag");
-let ActorGetFlag = game.macros.getName("ActorSetFlag");
+let ActorGetFlag = game.macros.getName("ActorGetFlag");
 
-// get the hookId here
 const hookIdFlag = ActorGetFlag.execute(args[1], "world", "heroismUpdateCombatHookId");
 console.log(hookIdFlag)
 
 if (args[0] === "on") {
-ChatMessage.create({content : "testing" })
+ChatMessage.create({content : "Heroism is applied to targets" })
     const hookId = Hooks.on("updateCombat", (combat, update) => {
         if (!("round" in update || "turn" in update)) return;
         if (combat.combatant.tokenId === args[1]) {
+            let target = canvas.tokens.get(args[1]);
             ActorUpdate.execute(args[1],{ "data.attributes.hp.temp": mod });
             ChatMessage.create({ content: "Heroism continues on " + target.name  })
         }
@@ -93,7 +93,7 @@ ChatMessage.create({content : "testing" })
 
 }
 if (args[0] === "off") {
-ChatMessage.create({content : "off"});
+ChatMessage.create({content : "Heroism ends"});
     Hooks.off("updateCombat", hookIdFlag);
     ActorUnSetFlag.execute(args[1], "world", "heroismUpdateCombatHookId");
 }

@@ -72,7 +72,7 @@ function UpdateActor() {
 Hooks.on("updateToken", (scene, token, update, flags, id) => {
     let movement = getProperty(update, "x") || getProperty(update, "y");
     if (movement !== undefined) {
-        UpdateActor();
+        setTimeout(function(){UpdateActor();); }, 200);
     }
 })
 

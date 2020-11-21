@@ -1,3 +1,5 @@
+ui.notifications.info("Aura of Protection Active");
+
 function createPlayerTable() {
     let playerTable = [];
     let playerCount = 0;
@@ -25,13 +27,11 @@ function auraCheck(playerTable, index) {
 }
 
 function inRange(token1, token2) {
-    debugger
     let gs = canvas.grid.size;
     let d1 = Math.abs((token1[0]._validPosition.x - token2[0]._validPosition.x) / gs);
     let d2 = Math.abs((token1[0]._validPosition.y - token2[0]._validPosition.y) / gs);
     let dist = Math.max(d1, d2);
     dist = dist * canvas.scene.data.gridDistance;
-    debugger
     if (dist <= 10)
         return true;
     return false;
@@ -60,16 +60,13 @@ function newSave(actor2, playerTable) {
 }
 
 function createActiveEffect(actor, newSave) {
-    debugger
     console.log(newSave)
     let aura = actor.effects.find(i => i.data.label === "Aura of Protection");
 debugger
     if (aura !== null) {
-        debugger
         let changes = aura.data.changes;
         changes[0].value = newSave
         aura.update({ changes });
-        debugger
     } else {
         let effectData = {
             label: "Aura of Protection",
@@ -86,14 +83,12 @@ debugger
 }
 
 function updateActor() {
-    debugger
     let playerTable = createPlayerTable();
     for (let i = 0; i < playerTable.length; i++) {
         let actor2 = playerTable[i][0];
         let token2 = playerTable[i][1];
         let save = newSave(actor2, playerTable)
         let actor = game.actors.get(actor2._id)
-        debugger
         createActiveEffect(actor, save)
     }
     //setTimeout(updateActor, 1000);

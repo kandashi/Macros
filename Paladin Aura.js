@@ -1,5 +1,9 @@
-ui.notifications.info("Aura of Protection Active");
+/// this will search for a token with the feature "Aura of Protection" and create/update active effects on all PC class actors within 10ft of that token
+//run on startup/refresh 
+//ONLY RUN ONCE
 
+
+ui.notifications.info("Aura of Protection Active");
 function createPlayerTable() {
     let playerTable = [];
     let playerCount = 0;

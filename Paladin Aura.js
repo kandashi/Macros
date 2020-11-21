@@ -1,5 +1,4 @@
 function createPlayerTable() {
-    console.log("createPlayerTable")
     let playerTable = [];
     let playerCount = 0;
     for (let i = 0; i < canvas.tokens.placeables.length; i++) {
@@ -8,7 +7,6 @@ function createPlayerTable() {
         if (actor.isPC == true) {
             playerTable.push([]);
             playerTable[playerCount].push(actor);
-            playerTable[playerCount].push(token);
             playerCount++;
         }
     }
@@ -21,20 +19,21 @@ function auraCheck(playerTable, index) {
         var abilityName = playerTable[index][0].data.items[j].name;
         var result = auraName.localeCompare(abilityName);
         if (result == 0)
-        return true;
+            return true;
     }
     return false;
 }
 
 function inRange(token1, token2) {
-
+    debugger
     let gs = canvas.grid.size;
-    let d1 = Math.abs((token1[0].x - token2[0].x) / gs);
-    let d2 = Math.abs((token1[0].y - token2[0].y) / gs);
+    let d1 = Math.abs((token1[0]._validPosition.x - token2[0]._validPosition.x) / gs);
+    let d2 = Math.abs((token1[0]._validPosition.y - token2[0]._validPosition.y) / gs);
     let dist = Math.max(d1, d2);
     dist = dist * canvas.scene.data.gridDistance;
+    debugger
     if (dist <= 10)
-    return true;
+        return true;
     return false;
 }
 
@@ -60,19 +59,51 @@ function newSave(actor2, playerTable) {
     return saveBonus;
 }
 
-function UpdateActor() {
+function createActiveEffect(actor, newSave) {
+    debugger
+    console.log(newSave)
+    let aura = actor.effects.find(i => i.data.label === "Aura of Protection");
+debugger
+    if (aura !== null) {
+        debugger
+        let changes = aura.data.changes;
+        changes[0].value = newSave
+        aura.update({ changes });
+        debugger
+    } else {
+        let effectData = {
+            label: "Aura of Protection",
+            icon: "",
+            changes: [{
+                "key": "data.bonuses.abilities.save",
+                "mode": 2,
+                "value": newSave,
+                "priority": "20"
+            }]
+        }
+        actor.createEmbeddedEntity("ActiveEffect", effectData);
+    }
+}
+
+function updateActor() {
+    debugger
     let playerTable = createPlayerTable();
     for (let i = 0; i < playerTable.length; i++) {
         let actor2 = playerTable[i][0];
         let token2 = playerTable[i][1];
-        game.actors.get(actor2._id).update({ "data.bonuses.abilities.save": newSave(actor2, playerTable) });
+        let save = newSave(actor2, playerTable)
+        let actor = game.actors.get(actor2._id)
+        debugger
+        createActiveEffect(actor, save)
     }
+    //setTimeout(updateActor, 1000);
     return;
 }
+
+
 Hooks.on("updateToken", (scene, token, update, flags, id) => {
     let movement = getProperty(update, "x") || getProperty(update, "y");
     if (movement !== undefined) {
-        setTimeout(function(){UpdateActor(); }, 200);
+        updateActor;
     }
 })
-

@@ -1,0 +1,122 @@
+//DAE Macro Execute, Effect Value = "Macro Name" @target @item.level
+let target = canvas.tokens.get(args[1])
+if (args[0] === "on") {
+    debugger
+    new Dialog({
+        title: 'Choose a damage type',
+        content: `
+            <form class="flexcol">
+              <div class="form-group">
+                <select id="element">
+                  <option value="acid">Acid</option>
+                  <option value="cold">Cold</option>
+                  <option value="fire">Fire</option>
+                  <option value="lightning">Lightning</option>
+                  <option value="poison">Poison</option>
+                </select>
+              </div>
+            </form>
+          `,
+        buttons: {
+          yes: {
+            icon: '<i class="fas fa-check"></i>',
+            label: 'Yes',
+            callback: async (html) => {
+              let element = html.find('#element').val();
+              let damageDice = (args[2] +1)
+              let spellDC = args[3]
+              await target.actor.createOwnedItem({
+                "name": "Dragons Breath",
+                "type": "weapon",
+                "data": {
+                    "description": {
+                        "value": "",
+                        "chat": "",
+                        "unidentified": ""
+                    },
+                    "source": "",
+                    "quantity": 1,
+                    "weight": 0,
+                    "price": 0,
+                    "attuned": false,
+                    "equipped": true,
+                    "rarity": "",
+                    "identified": true,
+                    "activation": {
+                        "type": "action",
+                        "cost": 0,
+                        "condition": ""
+                    },
+                    "duration": {
+                        "value": null,
+                        "units": ""
+                    },
+                    "target": {
+                        "value": 15,
+                        "width": null,
+                        "units": "ft",
+                        "type": "cone"
+                    },
+                    "range": {
+                        "value": null,
+                        "long": null,
+                        "units": ""
+                    },
+                    "uses": {
+                        "value": 0,
+                        "max": 0,
+                        "per": ""
+                    },
+                    "consume": {
+                        "type": "",
+                        "target": "",
+                        "amount": null
+                    },
+                    "ability": "",
+                    "actionType": "save",
+                    "attackBonus": 0,
+                    "chatFlavor": "",
+                    "critical": null,
+                    "damage": {
+                        "parts": [
+                            [
+                                `${damageDice}d6`,
+                                `${element}`
+                            ]
+                        ],
+                        "versatile": ""
+                    },
+                    "formula": "",
+                    "save": {
+                        "ability": "dex",
+                        "dc": spellDC,
+                        "scaling": "flat"
+                    },
+                    "armor": {
+                        "value": 10
+                    },
+                    "hp": {
+                        "value": 0,
+                        "max": 0,
+                        "dt": null,
+                        "conditions": ""
+                    },
+                    "weaponType": "natural",
+                    "proficient": true
+                },
+                "sort": 100000,
+                "img": "systems/dnd5e/icons/skills/affliction_14.jpg",
+                "effects": [],
+                "_id": "e4rLGjSOQo4NGdXR"
+            })
+              ChatMessage.create({ content: `${target.name} gains Dragons Breath with ${damageDice}d6 ${element}` })
+            }
+          },
+        },
+      }).render(true);
+
+}
+if (args[0] === "off") {
+    let item = target.actor.data.items.find(i => i.name === "Dragons Breath")
+    target.actor.deleteOwnedItem(item._id)
+}

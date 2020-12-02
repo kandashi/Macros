@@ -1,3 +1,4 @@
+//DAE Macro Execute, Effect Value = "Macro Name" @target @attributes.spelldc
 let target = canvas.tokens.get(args[1])
 let ActorSetFlag = game.macros.getName("ActorSetFlag");
 let ActorUnSetFlag = game.macros.getName("ActorUnSetFlag");

@@ -230,7 +230,6 @@ async function ContagionMessage() {
 }
 
 async function ContagionOff() {
-    debugger
     let flag = await target.getFlag("world", "ContagionSpell");
     Hooks.off("preUpdateCombat", flag.hook);
     target.unsetFlag("world", "ContagionSpell");

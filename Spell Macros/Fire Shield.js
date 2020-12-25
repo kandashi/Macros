@@ -1,7 +1,4 @@
 let target = canvas.tokens.get(args[1]);
-let ActorSetFlag = game.macros.getName("ActorSetFlag");
-let ActorUnSetFlag = game.macros.getName("ActorUnSetFlag");
-let ActorGetFlag = game.macros.getName("ActorGetFlag");
 
 if (args[0] === "on") {
     if (token) {   
@@ -11,19 +8,21 @@ if (args[0] === "on") {
                 one: {
                     label: "Warm",
                     callback: () => {
-                        let resistances = target.actor.data.data.traits.dr.value
-                        resistances.push("cold")
-                        ActorSetFlag.execute(args[1], 'world', 'FireShield', "cold")
-                        ChatMessage.create({ content: target.name + " gains resistnace to cold" })
+                        let resistances = target.actor.data.data.traits.dr.value;
+                        resistances.push("cold");
+                        target.actor.update({ "data.traits.dr.value": resistances });
+                        target.actor.setFlag('world', 'FireShield', "cold");
+                        ChatMessage.create({ content: target.name + " gains resistnace to cold" });
                     }
                 },
                 two: {
                     label: "Cold",
                     callback: () => {
-                        let resistances = target.actor.data.data.traits.dr.value
-                        resistances.push("fire")
-                        ActorSetFlag.execute(args[1], 'world', 'FireShield', "fire")
-                        ChatMessage.create({ content: target.name + " gains resistnace to fire" })
+                        let resistances = target.actor.data.data.traits.dr.value;
+                        resistances.push("fire");
+                        target.actor.update({ "data.traits.dr.value": resistances });
+                        target.actor.setFlag('world', 'FireShield', "fire");
+                        ChatMessage.create({ content: target.name + " gains resistnace to fire" });
                     }
                 },
             }
@@ -32,10 +31,11 @@ if (args[0] === "on") {
     }
 }
 if (args[0] === "off") {
-    let element = ActorGetFlag.execute(args[1], 'world', 'FireShield')
-    let resistances = target.actor.data.data.traits.dr.value
-    const index = resistances.indexOf(element)
-    resistances.splice(index, 1)
-    ChatMessage.create({ content: "Fire Shield expires on " + target.name})
+    let element = target.actor.getFlag('world', 'FireShield');
+    let resistances = target.actor.data.data.traits.dr.value;
+    const index = resistances.indexOf(element);
+    resistances.splice(index, 1);
+    target.actor.update({ "data.traits.dr.value": resistances });
+    ChatMessage.create({ content: "Fire Shield expires on " + target.name});
 
 }

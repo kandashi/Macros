@@ -1,7 +1,10 @@
 //DAE Macro Execute, Effect Value = "Macro Name" @target @item.level
-let target = canvas.tokens.get(args[1])
+let target = canvas.tokens.get(args[1]);
+
+/**
+ * Generates Dragons Breath item in targets inventory, when effect expires delete the item.
+ */
 if (args[0] === "on") {
-    debugger
     new Dialog({
         title: 'Choose a damage type',
         content: `
@@ -23,8 +26,8 @@ if (args[0] === "on") {
             label: 'Yes',
             callback: async (html) => {
               let element = html.find('#element').val();
-              let damageDice = (args[2] +1)
-              let spellDC = args[3]
+              let damageDice = (args[2] +1);
+              let spellDC = args[3];
               await target.actor.createOwnedItem({
                 "name": "Dragons Breath",
                 "type": "weapon",
@@ -36,41 +39,16 @@ if (args[0] === "on") {
                     },
                     "source": "",
                     "quantity": 1,
-                    "weight": 0,
-                    "price": 0,
-                    "attuned": false,
-                    "equipped": true,
-                    "rarity": "",
-                    "identified": true,
                     "activation": {
                         "type": "action",
-                        "cost": 0,
+                        "cost": 1,
                         "condition": ""
-                    },
-                    "duration": {
-                        "value": null,
-                        "units": ""
                     },
                     "target": {
                         "value": 15,
                         "width": null,
                         "units": "ft",
                         "type": "cone"
-                    },
-                    "range": {
-                        "value": null,
-                        "long": null,
-                        "units": ""
-                    },
-                    "uses": {
-                        "value": 0,
-                        "max": 0,
-                        "per": ""
-                    },
-                    "consume": {
-                        "type": "",
-                        "target": "",
-                        "amount": null
                     },
                     "ability": "",
                     "actionType": "save",
@@ -106,10 +84,8 @@ if (args[0] === "on") {
                 },
                 "sort": 100000,
                 "img": "systems/dnd5e/icons/skills/affliction_14.jpg",
-                "effects": [],
-                "_id": "e4rLGjSOQo4NGdXR"
-            })
-              ChatMessage.create({ content: `${target.name} gains Dragons Breath with ${damageDice}d6 ${element}` })
+            });
+              ChatMessage.create({ content: `${target.name} gains Dragons Breath with ${damageDice}d6 ${element}` });
             }
           },
         },
@@ -117,6 +93,6 @@ if (args[0] === "on") {
 
 }
 if (args[0] === "off") {
-    let item = target.actor.data.items.find(i => i.name === "Dragons Breath")
-    target.actor.deleteOwnedItem(item._id)
+    let item = target.actor.data.items.find(i => i.name === "Dragons Breath");
+    target.actor.deleteOwnedItem(item._id);
 }

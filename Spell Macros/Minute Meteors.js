@@ -1,33 +1,25 @@
 //DAE Macro Execute, Effect Value = "Macro Name" @target @item.level
 
 let target = canvas.tokens.get(args[1])
+
+/**
+ * Create Minute Meteor item in inventory, update to consume itself
+ */
 if (args[0] === "on") {
-    let meteorCount = 6 + ((args[2]-3) *2)
-    await target.actor.createOwnedItem({
+  let meteorCount = 6 + ((args[2] - 3) * 2)
+  await target.actor.createOwnedItem(
+    {
       "name": "Minute Meteors",
       "type": "weapon",
       "data": {
-        "description": {
-          "value": "",
-          "chat": "",
-          "unidentified": ""
-        },
-        "source": "",
         "quantity": 1,
-        "weight": 0,
-        "price": 0,
         "attuned": false,
         "equipped": true,
-        "rarity": "",
         "identified": true,
         "activation": {
           "type": "bonus",
-          "cost": 0,
+          "cost": 0.5,
           "condition": ""
-        },
-        "duration": {
-          "value": null,
-          "units": ""
         },
         "target": {
           "value": 5,
@@ -62,7 +54,6 @@ if (args[0] === "on") {
               "fire"
             ]
           ],
-          "versatile": ""
         },
         "formula": "",
         "save": {
@@ -70,29 +61,19 @@ if (args[0] === "on") {
           "dc": null,
           "scaling": "spell"
         },
-        "armor": {
-          "value": 10
-        },
-        "hp": {
-          "value": 0,
-          "max": 0,
-          "dt": null,
-          "conditions": ""
-        },
         "weaponType": "simpleR",
       },
       "img": "systems/dnd5e/icons/spells/fireball-red-1.jpg",
-      "effects": [],
-      "_id": "QoFfCsIZ8Et502pV"
-    }
-    )
-
+    },
+  );
+  let item = target.actor.data.items.find(i => i.name === "Minute Meteors")
+  let copy_item = duplicate(item)
+  copy_item.data.consume.target = copy_item._id;
+  target.actor.updateEmbeddedEntity("OwnedItem", copy_item);
 }
-let item = target.actor.data.items.find(i => i.name === "Minute Meteors")
-let copy_item = duplicate(item)
-copy_item.data.consume.target = copy_item._id;
-target.actor.updateEmbeddedEntity("OwnedItem", copy_item);
-if(args[0] === "off"){
-    let item = target.actor.data.items.find(i => i.name === "Minute Meteors")
-    target.actor.deleteOwnedItem(item._id)
+
+// Delete meteors
+if (args[0] === "off") {
+  let item = target.actor.data.items.find(i => i.name === "Minute Meteors")
+  target.actor.deleteOwnedItem(item._id)
 }

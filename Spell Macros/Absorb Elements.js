@@ -1,9 +1,6 @@
+//DAE Macro Execute, Effect Value = "Macro Name" @target 
 
-
-let target = canvas.tokens.get(args[1]);
-let ActorGetFlag = game.macros.getName("ActorGetFlag");
-let ActorSetFlag = game.macros.getName("ActorSetFlag");
-let ActorUnSetFlag = game.macros.getName("ActorUnSetFlag");
+let target = canvas.tokens.get(args[1]); //grab target token
 
 if (args[0] === "on") {
     new Dialog({
@@ -21,30 +18,29 @@ if (args[0] === "on") {
             </div>
           </form>
         `,
+        //select element type
         buttons: {
             yes: {
                 icon: '<i class="fas fa-check"></i>',
                 label: 'Yes',
                 callback: async (html) => {
                     let element = html.find('#element').val();
-                    
                     let res =  target.actor.effects.find(i => i.data.label === "Absorb Elements R");
                     let changes = res.data.changes;
-                    changes[0].value = element
-                    await res.update({changes});
+                    changes[0].value = element;
+                    await res.update({changes}); //push new resistance
 
-                    let weapons = target.actor.items.filter(i => i.data.type === `weapon`);
+                    let weapons = target.actor.items.filter(i => i.data.type === `weapon`); //filter items for weapons
                     for (let weapon of weapons) {
                         if(weapon.data.data.actionType === "mwak"){
-                        let dice = `${args[2]}d6`
+                        let dice = `${args[2]}d6`;
                         let copyWeapon = duplicate(weapon);
-                        let damageDice = copyWeapon.data.damage.parts
-                        damageDice.push([dice, element])
-                        await target.actor.updateEmbeddedEntity("OwnedItem", copyWeapon)
+                        let damageDice = copyWeapon.data.damage.parts;
+                        damageDice.push([dice, element]); // add new damage dice/element to weapons
+                        await target.actor.updateEmbeddedEntity("OwnedItem", copyWeapon); //update weapon
                         }
                     }
 
-                    ActorSetFlag.execute(args[1], 'world', 'AbsorbElements', "on")
                 },
             },
         }
@@ -52,16 +48,15 @@ if (args[0] === "on") {
 }
 if (args[0] === "off") {
     async function remove() {
-        let weapons = target.actor.items.filter(i => i.data.type === `weapon`);
+        let weapons = target.actor.items.filter(i => i.data.type === `weapon`); //filter weapons
         for (let weapon of weapons) {
             if(weapon.data.data.actionType === "mwak"){
             let copyWeapon = duplicate(weapon);
-            let damageRow = copyWeapon.data.damage.parts.length - 1
-            copyWeapon.data.damage.parts.splice(damageRow, 1)
-            await target.actor.updateEmbeddedEntity("OwnedItem", copyWeapon)
+            let damageRow = copyWeapon.data.damage.parts.length - 1; // find last damage row (should be the applied one)
+            copyWeapon.data.damage.parts.splice(damageRow, 1); // remove damage row
+            await target.actor.updateEmbeddedEntity("OwnedItem", copyWeapon); //update weapon
             }
         }
     }
     remove();
-    ActorUnSetFlag.execute(args[1], 'world', 'AbsorbElements')
 }

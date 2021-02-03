@@ -1,0 +1,211 @@
+{
+  "_id": "Kk3aYIRPWOIDuVeh",
+  "name": "Searing Smite",
+  "type": "spell",
+  "data": {
+    "description": {
+      "value": "<p><em>Neccessary manual adjustments to the spell:</em></p>\n<ul>\n<li><em>Change Ability Modifier to the one corresponding to your weapon</em></li>\n<li><em>Add an Attack Roll Bonus if your weapon is +1/+2/+3</em></li>\n<li><em>Adjust the second Damage formula with the correct damage die und damage type for your weapon and add a damage bonus if your weapon is +1/+2/+3</em></li>\n</ul>\n<p>&nbsp;</p>\n<p>The next time you hit a creature with a melee weapon attack during the spell&rsquo;s duration, your weapon flares with white-hot intensity, and the attack deals an extra 1d6 fire damage to the target and causes the target to ignite in flames. At the start of each of its turns until the spell ends, the target must make a Constitution saving throw. On a failed save, it takes 1d6 fire damage. On a successful save, the spell ends. If the target or a creature within 5 feet of it uses an action to put out the flames, or if some other effect douses the flames (such as the target being submerged in water), the spell ends.</p>\n<p><strong>At Higher Levels.</strong> When you cast this spell using a spell slot of 2nd level or higher, the initial extra damage dealt by the attack increases by 1d6 for each slot.</p>",
+      "chat": "",
+      "unidentified": ""
+    },
+    "source": "PHB pg. 274",
+    "activation": {
+      "type": "bonus",
+      "cost": 1,
+      "condition": ""
+    },
+    "duration": {
+      "value": 1,
+      "units": "minute"
+    },
+    "target": {
+      "value": 1,
+      "width": null,
+      "units": "",
+      "type": "creature"
+    },
+    "range": {
+      "value": null,
+      "long": null,
+      "units": "self"
+    },
+    "uses": {
+      "value": 0,
+      "max": "0",
+      "per": ""
+    },
+    "consume": {
+      "type": "",
+      "target": "",
+      "amount": null
+    },
+    "ability": "",
+    "actionType": "mwak",
+    "attackBonus": "0",
+    "chatFlavor": "",
+    "critical": null,
+    "damage": {
+      "parts": [
+        [
+          "1d6",
+          "fire"
+        ],
+        [
+          "1d8+@mod",
+          "piercing"
+        ]
+      ],
+      "versatile": ""
+    },
+    "formula": "",
+    "save": {
+      "ability": "",
+      "dc": null,
+      "scaling": "spell"
+    },
+    "level": 1,
+    "school": "evo",
+    "components": {
+      "value": "",
+      "vocal": true,
+      "somatic": false,
+      "material": false,
+      "ritual": false,
+      "concentration": true
+    },
+    "materials": {
+      "value": "",
+      "consumed": false,
+      "cost": 0,
+      "supply": 0
+    },
+    "preparation": {
+      "mode": "prepared",
+      "prepared": false
+    },
+    "scaling": {
+      "mode": "level",
+      "formula": "1d6"
+    }
+  },
+  "sort": 4900000,
+  "flags": {
+    "betterRolls5e": {
+      "critRange": {
+        "value": ""
+      },
+      "critDamage": {
+        "value": ""
+      },
+      "quickDesc": {
+        "value": true,
+        "altValue": true
+      },
+      "quickProperties": {
+        "value": true,
+        "altValue": true
+      },
+      "quickOther": {
+        "value": true,
+        "altValue": true,
+        "context": ""
+      },
+      "quickFlavor": {
+        "value": true,
+        "altValue": true
+      },
+      "quickVersatile": {
+        "value": false,
+        "altValue": false
+      },
+      "quickDamage": {
+        "context": {
+          "0": ""
+        },
+        "value": {
+          "0": true
+        },
+        "altValue": {
+          "0": true
+        }
+      }
+    },
+    "dynamiceffects": {
+      "equipActive": false,
+      "alwaysActive": false
+    },
+    "mess": {
+      "templateTexture": ""
+    },
+    "journal-links": {
+      "references": {},
+      "referencedBy": {
+        "Item": [
+          "a8Nqn86kyrqosfJM",
+          "OdnoBEFJmlbu8S9S"
+        ]
+      }
+    },
+    "dae": {
+      "activeEquipped": false,
+      "alwaysActive": false
+    },
+    "midi-qol": {
+      "onUseMacroName": ""
+    },
+    "exportSource": {
+      "world": "rpg-phandelver",
+      "system": "dnd5e",
+      "coreVersion": "0.7.9",
+      "systemVersion": "1.2.4"
+    }
+  },
+  "img": "systems/dnd5e/icons/spells/enchant-orange-3.jpg",
+  "effects": [
+    {
+      "_id": "KyxDAzowyZdhe9wP",
+      "flags": {
+        "dae": {
+          "stackable": false,
+          "specialDuration": [
+            "None"
+          ],
+          "macroRepeat": "startEveryTurn",
+          "transfer": false
+        },
+        "ActiveAuras": {
+          "isAura": false,
+          "ignoreSelf": false,
+          "hidden": false,
+          "height": false,
+          "aura": "None",
+          "radius": null
+        }
+      },
+      "changes": [
+        {
+          "key": "macro.execute",
+          "mode": 0,
+          "value": "\"Reoccuring Effect\" @item.level \"yes\" \"flat\" \"fire\" \"1d6\" \"\" \"\" \"con\" @attributes.spelldc",
+          "priority": 20
+        }
+      ],
+      "disabled": false,
+      "duration": {
+        "startTime": null,
+        "seconds": null,
+        "rounds": null,
+        "turns": null,
+        "startRound": null,
+        "startTurn": null
+      },
+      "icon": "systems/dnd5e/icons/spells/enchant-orange-3.jpg",
+      "label": "Searing Smite",
+      "tint": "",
+      "transfer": false,
+      "selectedKey": "macro.execute"
+    }
+  ],
+  "newEffect": "new",
+  "changes": []
+}

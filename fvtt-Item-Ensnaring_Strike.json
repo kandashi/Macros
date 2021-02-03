@@ -1,0 +1,205 @@
+{
+  "_id": "42Gyary7J0onmHML",
+  "name": "Ensnaring Strike",
+  "type": "spell",
+  "data": {
+    "description": {
+      "value": "<p><em>Neccessary manual adjustments to the spell:</em></p>\n<ul>\n<li><em>Change Ability Modifier to the one corresponding to your weapon</em></li>\n<li><em>Add an Attack Roll Bonus if your weapon is +1/+2/+3</em></li>\n<li><em>Adjust the second Damage formula with the correct damage die und damage type for your weapon and add a damage bonus if your weapon is +1/+2/+3</em></li>\n</ul>\n<p>&nbsp;</p>\n<p><em>The spell creates an active effect on the target that does the reoccuring damage. It's save DC is set to 500 in order to prevent the effect from being saved.</em></p>\n<p>&nbsp;</p>\n<p>The next time you hit a creature with a weapon attack before this spell ends, a writhing mass of thorny vines appears at the point of impact, and the target must succeed on a Strength saving throw or be @Compendium[combat-utility-belt.conditionsdnd5e.0mkU8eksNfwd1AZY]{Restrained}&nbsp;by the magical vines until the spell ends. A Large or larger creature has advantage on this saving throw. If the target succeeds on the save, the vines shrivel away.<br /><br />While @Compendium[combat-utility-belt.conditionsdnd5e.0mkU8eksNfwd1AZY]{Restrained} by this spell, the target takes 1d6 piercing damage at the start of each of its turns. A creature @Compendium[combat-utility-belt.conditionsdnd5e.0mkU8eksNfwd1AZY]{Restrained}&nbsp;by the vines or one that can touch the creature can use its action to make a Strength check against your spell save DC. On a success, the target is freed.&nbsp;</p>\n<p><strong>At Higher Levels.</strong>&nbsp;If you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d6 for each slot level above 1st.</p>",
+      "chat": "",
+      "unidentified": ""
+    },
+    "source": "PHB pg. 237",
+    "activation": {
+      "type": "bonus",
+      "cost": 1,
+      "condition": ""
+    },
+    "duration": {
+      "value": 1,
+      "units": "minute"
+    },
+    "target": {
+      "value": 1,
+      "width": null,
+      "units": "",
+      "type": "creature"
+    },
+    "range": {
+      "value": null,
+      "long": null,
+      "units": "self"
+    },
+    "uses": {
+      "value": 0,
+      "max": "0",
+      "per": ""
+    },
+    "consume": {
+      "type": "",
+      "target": "",
+      "amount": null
+    },
+    "ability": "",
+    "actionType": "rwak",
+    "attackBonus": "0",
+    "chatFlavor": "",
+    "critical": null,
+    "damage": {
+      "parts": [
+        [
+          "1d8+@mod",
+          "piercing"
+        ]
+      ],
+      "versatile": ""
+    },
+    "formula": "",
+    "save": {
+      "ability": "str",
+      "dc": null,
+      "scaling": "spell"
+    },
+    "level": 1,
+    "school": "con",
+    "components": {
+      "value": "",
+      "vocal": true,
+      "somatic": false,
+      "material": false,
+      "ritual": false,
+      "concentration": true
+    },
+    "materials": {
+      "value": "",
+      "consumed": false,
+      "cost": 0,
+      "supply": 0
+    },
+    "preparation": {
+      "mode": "prepared",
+      "prepared": false
+    },
+    "scaling": {
+      "mode": "none",
+      "formula": ""
+    }
+  },
+  "sort": 200000,
+  "flags": {
+    "dynamiceffects": {
+      "equipActive": false,
+      "alwaysActive": false,
+      "effects": []
+    },
+    "mess": {
+      "templateTexture": "",
+      "isBonusDamage": false
+    },
+    "journal-links": {
+      "references": {},
+      "referencedBy": {
+        "Item": [
+          "OdnoBEFJmlbu8S9S"
+        ]
+      }
+    },
+    "dae": {
+      "activeEquipped": false,
+      "alwaysActive": false
+    },
+    "midi-qol": {
+      "onUseMacroName": ""
+    },
+    "exportSource": {
+      "world": "rpg-phandelver",
+      "system": "dnd5e",
+      "coreVersion": "0.7.9",
+      "systemVersion": "1.2.4"
+    }
+  },
+  "img": "systems/dnd5e/icons/skills/violet_14.jpg",
+  "effects": [
+    {
+      "_id": "qYoMqPnCM0jFwjX4",
+      "flags": {
+        "core": {
+          "statusId": "combat-utility-belt.restrained"
+        },
+        "combat-utility-belt": {
+          "conditionId": "restrained",
+          "overlay": false
+        },
+        "dae": {
+          "stackable": false,
+          "specialDuration": [
+            "None"
+          ],
+          "macroRepeat": "startEveryTurn",
+          "transfer": false
+        },
+        "ActiveAuras": {
+          "isAura": false,
+          "ignoreSelf": false,
+          "hidden": false,
+          "height": false,
+          "aura": "None",
+          "radius": null
+        }
+      },
+      "changes": [
+        {
+          "key": "data.attributes.movement.all",
+          "mode": 0,
+          "value": "0",
+          "priority": 50
+        },
+        {
+          "key": "flags.midi-qol.grants.advantage.attack.all",
+          "mode": 0,
+          "value": "1",
+          "priority": 50
+        },
+        {
+          "key": "flags.midi-qol.disadvantage.attack.all",
+          "mode": 0,
+          "value": "1",
+          "priority": 50
+        },
+        {
+          "key": "flags.midi-qol.disadvantage.ability.save.dex",
+          "mode": 0,
+          "value": "1",
+          "priority": 50
+        },
+        {
+          "key": "macro.execute",
+          "mode": 0,
+          "value": "\"Reoccuring Effect\" @item.level \"no\" \"scaling\" \"piercing\" \"1d6\" \"1\" \"d6\"",
+          "priority": 20
+        }
+      ],
+      "disabled": false,
+      "duration": {
+        "startTime": null,
+        "seconds": null,
+        "rounds": null,
+        "turns": null,
+        "startRound": null,
+        "startTurn": null
+      },
+      "icon": "modules/combat-utility-belt/icons/restrained.svg",
+      "label": "Restrained",
+      "tint": "",
+      "transfer": false,
+      "selectedKey": [
+        "data.attributes.movement.all",
+        "data.abilities.cha.dc",
+        "data.abilities.cha.dc",
+        "data.abilities.cha.dc",
+        "macro.execute"
+      ]
+    }
+  ],
+  "newEffect": "new",
+  "changes": []
+}

@@ -1,0 +1,73 @@
+// arguments
+//args[0] --> "on", "each", "off"
+//args[1] --> the level the spell was cast (usually @item.level)
+//args[2] --> save allowed ("yes"/"no"), e.g. damage effects that can only be ended using an action)
+//args[3] --> damage mode 
+//              "none" for effects without damage
+//              "flat" for fixed damage from argument baseDamage
+//              "scaling" for damage scaling based on castLevel
+//args[4] --> damage type
+//args[5] --> baseDamage (e.g. 1d6)
+//args[6] --> scalingDieCount (e.g. 2 for 2dX scaling per spell level)
+//args[7] --> scalingDieSize (e.g. d6 for Xd6 scaling per spell level)
+//args[8] --> saveType (if spell does not contain a saving throw, e.g. Paladin smites)
+//args[9] --> flat DC
+
+if (args[0] === "each") {
+
+  const lastArg = args[args.length-1];
+  const castLevel = args[1];
+  const saveAllowed = args[2];
+  const damageMode = args[3];
+  const damageType = args[4];
+  const baseDamage = args[5];
+  const scalingDieCount = args[6];
+  const scalingDieSize = args[7];
+  let saveType = args[8];
+  let dc = args[9];
+
+  let target;
+  if (lastArg.tokenId) target = canvas.tokens.get(lastArg.tokenId).actor;
+    else target = game.actors.get(lastArg.actorId);
+  const effect = lastArg.effectId;
+
+  const casterItem = lastArg.efData.flags.dae.itemData;
+  const casterItemLevel = casterItem.data.level;
+  const casterT = canvas.tokens.placeables.find(token => token.actor.items.get(casterItem._id) != null);
+  const caster = casterT.actor;
+
+  let effectEnds;
+  
+  //Determine saveType and dc if save is allowed and ask for save
+  //Priority for save: 1) values in args[8] and args[9]
+  //          2) values stored in the item
+  if (saveAllowed === "yes") {
+      if (saveType === null) {
+ChatMessage.create({ content: "Hallo" });   
+        saveType = casterItem.data.save.ability;
+        dc = casterItem.data.save.dc;
+      }
+      const flavor = `${CONFIG.DND5E.abilities[saveType]} DC${dc} ${casterItem.name}`;  
+      let save = (await target.rollAbilitySave(saveType, {flavor, fastforward: true, chatMessage: true}));
+      if (save.total >= dc) effectEnds = true;
+        else effectEnds = false;
+  } else effectEnds = false;
+
+
+  //Delete effect if saved; otherwise do damage, if effect has damage over time
+  if (effectEnds) {
+    if (target) target.deleteEmbeddedEntity("ActiveEffect", effect);
+  } else {
+    let damageRoll;
+    if (damageMode != "none") {
+      let damageFormula;
+      if (damageMode === "scaling" && castLevel-casterItemLevel > 0) {
+        damageFormula = baseDamage + "+" + (castLevel-casterItemLevel) * scalingDieCount + scalingDieSize;
+      } else {
+        damageFormula = baseDamage;
+      }
+      damageRoll = new Roll(damageFormula).roll();
+      new MidiQOL.DamageOnlyWorkflow(caster, casterT, damageRoll.total, damageType, [target], damageRoll, {flavor: `Damage for ${casterItem.name}`, itemCardId: "new", itemData: casterItem})
+    }
+  }
+}

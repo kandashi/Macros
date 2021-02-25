@@ -39,7 +39,8 @@ if (args[0] === "off") {
         let flag = await DAE.getFlag(tactor, "StinkingCloudCast");
         Hooks.off("updateCombat", flag.combatId);
         DAE.unsetFlag(tactor, "StinkingCloudCast");
-        canvas.templates.get(flag.template._id).delete()
+        let template = canvas.templates.get(flag.template._id)
+        if(template) template.delete()
     }
     RadianceOff()
     for (let token of canvas.tokens.placeables) {

@@ -1,7 +1,10 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target 
+//DAE Item Macro 
 
-
-let target = canvas.tokens.get(args[1]);
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
+const target = canvas.tokens.get(lastArg.tokenId)
 
 /**
  * Adds selected damage resistance to target, set flag for resistance, then remove.
@@ -28,14 +31,14 @@ if (args[0] === "on") {
                 label: 'Yes',
                 callback: async (html) => {
                     let element = html.find('#element').val();
-                    let resistances = target.actor.data.data.traits.dr.value;
+                    let resistances = tactor.data.data.traits.dr.value;
                     const index = resistances.indexOf(element);
                     if (index !== -1) {
                         resistances.splice(index, 1);
-                        await target.actor.update({ "data.traits.dr.value": resistances });
-                        target.actor.setFlag('world', 'ElementalBane', element);
+                        await tactor.update({ "data.traits.dr.value": resistances });
+                        DAE.setFlag(tactor, 'ElementalBane', element);
                     }
-                    ChatMessage.create({ content: `${target.name} has elemental bane for ${element}` });
+                    ChatMessage.create({ content: `${tname} has elemental bane for ${element}` });
                 }
             },
         },
@@ -43,13 +46,13 @@ if (args[0] === "on") {
 }
 if (args[0] === "off") {
     async function Off() {
-        let element = await target.actor.getFlag('world', 'ElementalBane');
-        let resistances = target.actor.data.data.traits.dr.value;
+        let element = await DAE.getFlag(tactor, 'ElementalBane');
+        let resistances = tactor.data.data.traits.dr.value;
         if (element !== undefined) {
             resistances.push(element);
-            target.actor.update({ "data.traits.dr.value": resistances });
+            tactor.update({ "data.traits.dr.value": resistances });
         }
-        ChatMessage.create({ content: `${target.name} has elemental bane for ${element} removed` });
+        ChatMessage.create({ content: `${tname} has elemental bane for ${element} removed` });
     }
     Off();
 }

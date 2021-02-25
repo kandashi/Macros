@@ -1,78 +1,106 @@
-//for template
 
-const templateID = canvas.templates.placeables[canvas.templates.placeables.length - 1].data._id;
-const caster = game.actors.get(args[0].actor._id);
-const spellSave = caster.data.data.attributes.spelldc;
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
+const target = canvas.tokens.get(lastArg.tokenId)
+const DAEItem = lastArg.efData.flags.dae.itemData
 
-const tokenId = Hooks.on("updateToken", (scene, token, update, flags, id) => {
-    let movement = getProperty(update, "x") || getProperty(update, "y");
-    if (movement === undefined) return;
-    console.log("Update token");
-    let template = canvas.templates.get(templateID);
-    let testToken1 = canvas.tokens.get(token._id);
-    let templateSphere = [template.data.x, template.data.y, template.data.distance];
-    let tokenCenter = testToken1.center;
-    templateSphere[2] = (templateSphere[2] * canvas.grid.size) / canvas.scene.data.gridDistance;
-    let distance = Math.pow((templateSphere[0] - tokenCenter.x), 2) + Math.pow((templateSphere[1] - tokenCenter.y), 2);
-    if (Math.pow((templateSphere[2]), 2) >= distance) {
-        StinkingCloud(testToken1);
-    }
-});
+const spellSave = args[1]
 
-const combatId = Hooks.on("updateCombat", (combat, changed, options, userId) => {
-    if (!("turn" in changed)) return;
-    console.log("Update combat");
-    debugger;
-    async function combatCheck() {
-        let template = canvas.templates.get(templateID);
-        let testToken2 = canvas.tokens.get(combat.combatant.tokenId);
-        await testToken2.unsetFlag('world', 'SickeningRadianceSave');
-        let templateSphere = [template.data.x, template.data.y, template.data.distance];
-        let tokenCenter = testToken2.center;
-        templateSphere[2] = (templateSphere[2] * canvas.grid.size) / canvas.scene.data.gridDistance;
-        let distance = Math.pow((templateSphere[0] - tokenCenter.x), 2) + Math.pow((templateSphere[1] - tokenCenter.y), 2);
-        let c2 = Math.pow((templateSphere[2]), 2);
-        if (c2 >= distance) {
-            StinkingCloud(testToken2);
+if(args[0] === "on"){
+    let templateData = {
+        t: "circle",
+        user: game.user._id,
+        distance: 30,
+        direction: 0,
+        x: 0,
+        y: 0,
+        fillColor: game.user.color,
+        flags: {
+            Kandashi: {
+                SickeningRadiance: {
+                    ActorId: tactor.id
+                }
+            }
         }
-    } combatCheck();
-});
+    };
 
+    Hooks.once("createMeasuredTemplate", (_scene, template) => RunHooks(template));
 
-const deleteID = Hooks.on("deleteMeasuredTemplate", (scene, data, options, id) => {
-    if (data._id !== templateID) return;
-    async function deleteTemplate() {
-        let flag = await caster.getFlag("world", "SickeningRadiance");
-        Hooks.off("updateToken", flag.tokenHook);
-        Hooks.off("updateCombat", flag.combatHook);
-        Hooks.off("deleteMeasuredTemplate", flag.deleteHook);
-        caster.unsetFlag("world", "SickeningRadiance");
-        //search for all sickening radiance effects and remove
-    }
-    deleteTemplate();
+    let template = new game.dnd5e.canvas.AbilityTemplate(templateData);
+    template.actorSheet = tactor.sheet;
+    template.drawPreview();
+
+}
+
+if(args[0] === "off"){
+    let template = canvas.templates.placeables.find(i => i.data.flags?.Kandashi?.SickeningRadiance?.ActorId === tactor.id)
+    if(template) template.delete()
+    RemoveHooks()
     for (let token of canvas.tokens.placeables) {
         let effect = token.actor.effects.find(i => i.data.label === "Sickening Radiance");
         if(effect !== null) effect.delete();
         token.actor.unsetFlag("world", "SickeningRadianceSave");
     }
-});
+}
+
+if(args[0] === "each"){
+    let template = canvas.templates.placeables.find(i => i.data.flags?.Kandashi?.SickeningRadiance?.ActorId === tactor.id)
+    RemoveHooks()
+    RunHooks(template.data)
+}
+
+async function RemoveHooks(){
+    let flag = await DAE.getFlag(tactor, "SickeningRadianceCast" )
+    Hooks.off("updateToken", flag.movementHook)
+    Hooks.off("updateCombat", flag.combatHook)
+}
+
+async function RunHooks(template){
+    const movementId = Hooks.on("updateToken", (scene, token, update, flags, id) => {
+        let movement = getProperty(update, "x") || getProperty(update, "y");
+        if (movement === undefined) return;
+        console.log("Update token");
+        let testToken = canvas.tokens.get(token._id)
+        CheckDistance(template, testToken)
+    });
+    
+    const combatId = Hooks.on("updateCombat", (combat, changed, options, userId) => {
+        if (!("turn" in changed)) return;
+        async function combatCheck() {
+            let testToken2 = canvas.tokens.get(combat.combatant.tokenId);
+            await testToken2.unsetFlag('world', 'SickeningRadianceSave');
+            CheckDistance(template, testToken2)
+        } combatCheck();
+    });
+    DAE.setFlag(tactor, "SickeningRadianceCast", {
+        movementHook : movementId,
+        combatHook : combatId 
+    })
+}
 
 
 
-caster.setFlag('world', 'SickeningRadiance', {
-    tokenHook: tokenId,
-    combatHook: combatId,
-    deleteHook: deleteID
-});
+function CheckDistance(template, token){
+    debugger
+    let templateSphere = [template.x, template.y, template.distance];
+    let tokenCenter = token.center;
+    templateSphere[2] = (templateSphere[2] * canvas.grid.size) / canvas.scene.data.gridDistance;
+    let distance = Math.pow((templateSphere[0] - tokenCenter.x), 2) + Math.pow((templateSphere[1] - tokenCenter.y), 2);
+    if (Math.pow((templateSphere[2]), 2) >= distance) {
+        StinkingCloud(token);
+    }
+}
 
 
+async function StinkingCloud(token) {
 
-async function StinkingCloud(testToken) {
-    let token = canvas.tokens.get(testToken.id);
     if (token.getFlag('world', 'SickeningRadianceSave')) return;
-    let save = await token.actor.rollAbilitySave("con");
-    debugger;
-    if (save.total < spellSave) {
+    const flavor = `${CONFIG.DND5E.abilities["con"]} DC${spellSave} ${DAEItem?.name || ""}`;
+    let saveRoll = (await tactor.rollAbilitySave("con", { flavor })).total;
+
+    if (saveRoll < spellSave) {
         let roll = new Roll("4d10").roll().total;
         let targets = new Set();
         let saves = new Set();
@@ -82,7 +110,7 @@ async function StinkingCloud(testToken) {
             newExhaustion = effect.data.changes[0].value + 1;
         }
  else newExhaustion = 1;
-        targets.add(testToken);
+        targets.add(token);
         saves.add(targets);
         MidiQOL.applyTokenDamage([{ damage: roll, type: "radiant" }], 10, targets, [], saves);
 
@@ -135,24 +163,5 @@ async function StinkingCloud(testToken) {
             token.actor.createEmbeddedEntity("ActiveEffect", effectData);
         }
     }
-    debugger;
     token.setFlag('world', 'SickeningRadianceSave', true);
 }
-
-
-
-/*
-if(args[0] === "off"){
-    async function RadianceOff() {
-        let flag = await caster.actor.getFlag("world", "SickeningRadiance");
-        Hooks.off("updateToken", flag.tokenHook);
-        Hooks.off("preUpdateCombat", flag.combatHook);
-        caster.unsetFlag("world", "SickeningRadiance");
-    }
-    RadianceOff()
-    template.delete()
-
-}
-
-*/
-

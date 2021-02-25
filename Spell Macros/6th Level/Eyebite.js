@@ -1,5 +1,12 @@
-let target = canvas.tokens.get(args[1]);
-let ConditionControl = game.macros.getName("CUB Condition");
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
+const DAEItem = lastArg.efData.flags.dae.itemData
+const saveData = DAEItem.data.save
+
+let folder = await game.packs.get("Dynamic-Effects-SRD.DAE SRD Macros").getContent()
+let CUBControl = folder.find(i => i.data.name === "CUB Condition")
 
 /**
  * Dialog appears on players screen, CondtionControll callback execute on GM end 
@@ -14,13 +21,14 @@ function EyebiteDialog() {
                 label: "Asleep",
                 callback: async () => {
                     for (let target of game.user.targets) {
-                        let { total } = await target.actor.rollAbilitySave("wis");
-                        if (total < args[2]) {
-                            ChatMessage.create({ content: target.name + " failed the save with a " + total });
-                            ConditionControl.execute("apply", "Unconscious", target);
+                        const flavor = `${CONFIG.DND5E.abilities[saveData.ability]} DC${saveData.dc} ${DAEItem?.name || ""}`;
+                        let saveRoll = (await tactor.rollAbilitySave(saveData.ability, { flavor })).total;
+                        if (saveRoll < saveData.ability) {
+                            ChatMessage.create({ content: `${target.name} failed the save with a ${saveRoll}` });
+                            CUBControl.execute("apply", "Unconscious", target);
                         }
- else {
-                            ChatMessage.create({ content: target.name + " passed the save with a " + total });
+                        else {
+                            ChatMessage.create({ content: `${target.name} passed the save with a ${saveRoll}` });
                         }
                     }
                 }
@@ -29,13 +37,14 @@ function EyebiteDialog() {
                 label: "Panicked",
                 callback: async () => {
                     for (let target of game.user.targets) {
-                        let { total } = await target.actor.rollAbilitySave("wis");
-                        if (total < args[2]) {
-                            ChatMessage.create({ content: target.name + " failed the save with a " + total });
-                            ConditionControl.execute("apply", "Frightened", target);
+                        const flavor = `${CONFIG.DND5E.abilities[saveData.ability]} DC${saveData.dc} ${DAEItem?.name || ""}`;
+                        let saveRoll = (await tactor.rollAbilitySave(saveData.ability, { flavor })).total;
+                        if (saveRoll < saveData.ability) {
+                            ChatMessage.create({ content: `${target.name} failed the save with a ${saveRoll}` });
+                            CUBControl.execute("apply", "Frightened", target);
                         }
- else {
-                            ChatMessage.create({ content: target.name + " passed the save with a " + total });
+                        else {
+                            ChatMessage.create({ content: `${target.name} passed the save with a ${saveRoll}` });
                         }
                     }
                 }
@@ -44,13 +53,14 @@ function EyebiteDialog() {
                 label: "Sickened",
                 callback: async () => {
                     for (let target of game.user.targets) {
-                        let { total } = await target.actor.rollAbilitySave("wis");
-                        if (total < args[2]) {
-                            ChatMessage.create({ content: target.name + " failed the save with a " + total });
-                            ConditionControl.execute("apply", "Poisoned", target);
+                        const flavor = `${CONFIG.DND5E.abilities[saveData.ability]} DC${saveData.dc} ${DAEItem?.name || ""}`;
+                        let saveRoll = (await tactor.rollAbilitySave(saveData.ability, { flavor })).total;
+                        if (saveRoll < saveData.ability) {
+                            ChatMessage.create({ content: `${target.name} failed the save with a ${saveRoll}` });
+                            CUBControl.execute("apply", "Poisoned", target);
                         }
- else {
-                            ChatMessage.create({ content: target.name + " passed the save with a " + total });
+                        else {
+                            ChatMessage.create({ content: `${target.name} passed the save with a ${saveRoll}` });
                         }
                     }
                 }
@@ -60,25 +70,12 @@ function EyebiteDialog() {
 }
 
 if (args[0] === "on") {
-    const hookId = Hooks.on("updateCombat", (combat, update) => {
-        if (!("round" in update || "turn" in update)) return;
-        if (combat.combatant.tokenId === args[1]) {
-            EyebiteDialog();
-        }
-    });
-    target.actor.setFlag("world", "EyebiteSpell", hookId);
-    ChatMessage.create({ content: target.name + " is blessed with Eyebite" });
     EyebiteDialog();
+    ChatMessage.create({ content: `${target.name} is blessed with Eyebite` });
 
 }
 
 //Cleanup hooks and flags.
-if (args[0] === "off") {
-    async function off() {
-        ChatMessage.create({ content: "Eyebite is removed" });
-        let hookIdFlag = await target.actor.getFlag("world", "EyebiteSpell");
-        Hooks.off("updateCombat", hookIdFlag);
-    }
-    off();
-    target.actor.unsetFlag("world", "EyebiteSpell");
+if (args[0] === "each") {
+    EyebiteDialog();
 }

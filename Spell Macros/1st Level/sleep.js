@@ -1,3 +1,5 @@
+//DO NOT USE//
+
 let sleepHp = args[0].damageTotal;
 
 if(!sleepHp) {

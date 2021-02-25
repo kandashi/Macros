@@ -1,4 +1,4 @@
-//DAE Item Macro  @attributes.spell.dc
+//DAE Item Macro  @attributes.spelldc
 const lastArg = args[args.length - 1];
 let tactor;
 if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;

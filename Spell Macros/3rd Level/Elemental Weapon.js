@@ -1,13 +1,18 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target 
+//DAE Item Macro Execute
 
-let target = canvas.tokens.get(args[1]);
-let weapons = target.actor.items.filter(i => i.data.type === `weapon`);
-let weapon_content = ``;
-let bonus = '';
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
+const target = canvas.tokens.get(lastArg.tokenId)
+const DAEItem = lastArg.efData.flags.dae.itemData
 
-if (args[2] >= 7) bonus = 3;
-if (args[2] < 7) bonus = 2;
-if (args[2] < 4) bonus = 1;
+
+let weapons = tactor.items.filter(i => i.data.type === `weapon`);
+var weapon_content = ``, bonus = ``;
+if (DAEItem.data.level >= 7) bonus = 3;
+else if (DAEItem.data.level < 7) bonus = 2;
+else if (DAEItem.data.level < 4) bonus = 1;
 
 for (let weapon of weapons) {
   weapon_content += `<option value=${weapon.id}>${weapon.name}</option>`;
@@ -43,13 +48,13 @@ if (args[0] === "on") {
           let weaponId = html.find('#weapon').val();
           let element = html.find('#element').val();
           let dmgDice = (bonus + "d4");
-          let weapon = target.actor.items.get(weaponId);
+          let weapon = tactor.items.get(weaponId);
           let copyWeapon = duplicate(weapon);
           copyWeapon.data.attackBonus = (copyWeapon.attackBonus + bonus);
           let damageDice = copyWeapon.data.damage.parts
           damageDice.push([dmgDice, element])
-          target.actor.updateEmbeddedEntity("OwnedItem", copyWeapon)
-          target.actor.setFlag('world', 'elementalWeapon', {
+          tactor.updateEmbeddedEntity("OwnedItem", copyWeapon)
+          DAE.setFlag(tactor, 'elementalWeapon', {
             diceNum: dmgDice,
             attack: bonus,
             elementType: element,
@@ -62,17 +67,17 @@ if (args[0] === "on") {
 }
 
 if (args[0] === "off") {
-  let flag = await target.actor.getFlag('world', 'elementalWeapon')
+  let flag = await DAE.getFlag(tactor, 'elementalWeapon')
   let { diceNum, attack, elementType, weaponID } = flag
-  let Weapon = target.actor.items.get(weaponID);
+  let Weapon = tactor.items.get(weaponID);
   let copy_item = duplicate(Weapon);
   copy_item.data.attackBonus = (copy_item.attackBonus - attack);
   let weaponDamageParts = copy_item.data.damage.parts;
   for (let i = 0; i < weaponDamageParts.length; i++) {
     if (weaponDamageParts[i][0] === diceNum && weaponDamageParts[i][1] === elementType){
       weaponDamageParts.splice(i, 1)
-      target.actor.updateEmbeddedEntity("OwnedItem", copy_item);
-      target.actor.unsetFlag(`world`, `elemntalWeapon`);
+      tactor.updateEmbeddedEntity("OwnedItem", copy_item);
+      DAE.unsetFlag(tactor, `elemntalWeapon`);
       return;
     }
   }

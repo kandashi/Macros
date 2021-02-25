@@ -1,12 +1,18 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target @item.level
+//DAE Item Macro, Effect Value = @attributes.spelldc
 
-let target = canvas.tokens.get(args[1])
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
+const target = canvas.tokens.get(lastArg.tokenId)
+const DAEItem = lastArg.efData.flags.dae.itemData
+const saveData = DAEItem.data.save
 
 /**
  * Create Minute Meteor item in inventory, update to consume itself
  */
 if (args[0] === "on") {
-  let meteorCount = 6 + ((args[2] - 3) * 2)
+  let meteorCount = 6 + ((DAEItem.data.level - 3) * 2)
   await target.actor.createOwnedItem(
     {
       "name": "Minute Meteors",
@@ -42,11 +48,7 @@ if (args[0] === "on") {
           "target": "FsH5kHmkJXsjzr6H",
           "amount": 1
         },
-        "ability": "",
         "actionType": "save",
-        "attackBonus": 0,
-        "chatFlavor": "",
-        "critical": null,
         "damage": {
           "parts": [
             [
@@ -58,7 +60,7 @@ if (args[0] === "on") {
         "formula": "",
         "save": {
           "ability": "dex",
-          "dc": null,
+          "dc": saveData.dc,
           "scaling": "spell"
         },
         "weaponType": "simpleR",

@@ -1,6 +1,9 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target 
+//DAE Item Macro 
 
-  let target = canvas.tokens.get(args[1]);
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
 
   if (args[0] === "on") {
     new Dialog({
@@ -24,22 +27,22 @@
           label: 'Yes',
           callback: (html) => {
             let element = html.find('#element').val();
-            let resistances = target.actor.data.data.traits.dr.value;
+            let resistances = tactor.data.data.traits.dr.value;
             resistances.push(element);
-            target.actor.update({ "data.traits.dr.value": resistances });
-            target.actor.setFlag('world', 'ProtectionFromEnergy', element);
-            ChatMessage.create({ content: target.name + " gains resistance to " + element });
+            tactor.update({ "data.traits.dr.value": resistances });
+            DAE.setFlag(tactor, 'ProtectionFromEnergy', element);
+            ChatMessage.create({ content: `${tactor.name} gains resistance to ${element}` });
           }
         },
       },
     }).render(true);
   }
   if (args[0] === "off") {
-    let element = target.actor.getFlag('world', 'ProtectionFromEnergy');
-    let resistances = target.actor.data.data.traits.dr.value;
+    let element = DAE.getFlag(tactor, 'ProtectionFromEnergy');
+    let resistances = tactor.data.data.traits.dr.value;
     const index = resistances.indexOf(element);
     resistances.splice(index, 1);
-    target.actor.update({ "data.traits.dr.value": resistances });
-    target.actor.unsetFlag('world', 'ProtectionFromEnergy');
-    ChatMessage.create({ content: `${target.name} loses resistance to ${element}`});
+    tactor.update({ "data.traits.dr.value": resistances });
+    DAE.unsetFlag(tactor, 'ProtectionFromEnergy');
+    ChatMessage.create({ content: `${tactor.name} loses resistance to ${element}`});
   }

@@ -1,11 +1,15 @@
-let target = canvas.tokens.get(args[1]);
-let weapons = target.actor.items.filter(i => i.data.type === `weapon`);
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
+
+let weapons = tactor.items.filter(i => i.data.type === `weapon`);
 let weapon_content = ``;
 
 for (let weapon of weapons) {
     weapon_content += `<option value=${weapon.id}>${weapon.name}</option>`;
 }
-if (args[0] === "on" && !target.getFlag('world', 'shillelagh')) {
+if (args[0] === "on") {
     let content = `
 <div class="form-group">
   <label>Weapons : </label>
@@ -24,9 +28,9 @@ if (args[0] === "on" && !target.getFlag('world', 'shillelagh')) {
                 label: `Ok`,
                 callback: (html) => {
                     let itemId = html.find('[name=weapons]')[0].value;
-                    let item = target.actor.items.get(itemId);
-                    let copy_item = duplicate(item);
-                    target.actor.setFlag(`world`, `shillelagh`, {
+                    let weaponItem = tactor.items.get(itemId);
+                    let copy_item = duplicate(weaponItem);
+                    DAE.setFlag(tactor, `shillelagh`, {
                         id : itemId,
                         damage : copy_item.data.damage.parts[0][0]    
                     });
@@ -34,7 +38,7 @@ if (args[0] === "on" && !target.getFlag('world', 'shillelagh')) {
                     var newdamage = damage.replace(/1d(4|6)/g,"1d8");
                     copy_item.data.damage.parts[0][0] = newdamage;
                     copy_item.data.ability = "wis";
-                    target.actor.updateEmbeddedEntity("OwnedItem", copy_item);
+                    tactor.updateEmbeddedEntity("OwnedItem", copy_item);
                     ChatMessage.create({content: copy_item.name + " is empowered"});
                 }
             },
@@ -47,15 +51,13 @@ if (args[0] === "on" && !target.getFlag('world', 'shillelagh')) {
 }
 
 if (args[0] === "off") {
-    let flag = target.actor.getFlag(`world`, `shillelagh`);
-    let itemId = flag.id;
-    let damage = flag.damage;
-    let item = target.actor.items.get(itemId);
-    let copy_item = duplicate(item);
-    copy_item.data.damage.parts[0][0] = damage;
+    let flag = DAE.getFlag(tactor, `shillelagh`);
+    let weaponItem = tactor.items.get(flag.id);
+    let copy_item = duplicate(weaponItem);
+    copy_item.data.damage.parts[0][0] = flag.damage;
     copy_item.data.ability = "";
-    target.actor.updateEmbeddedEntity("OwnedItem", copy_item);
-    target.actor.unsetFlag(`world`, `shillelagh`);
+    tactor.updateEmbeddedEntity("OwnedItem", copy_item);
+    DAE.unsetFlag(tactor, `shillelagh`);
     ChatMessage.create({content: copy_item.name + " returns to normal"});
 
 }

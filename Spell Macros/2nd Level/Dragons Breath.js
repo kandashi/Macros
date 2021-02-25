@@ -10,7 +10,7 @@ const DAEitem = lastArg.efData.flags.dae.itemData
 /**
  * Generates Dragons Breath item in targets inventory, when effect expires delete the item.
  */
-debugger
+
 if (args[0] === "on") {
     new Dialog({
         title: 'Choose a damage type',
@@ -34,7 +34,6 @@ if (args[0] === "on") {
             callback: async (html) => {
               let element = html.find('#element').val();
               let damageDice = (args[1] +1);
-              debugger
               await tactor.createOwnedItem({
                 "name": "Dragons Breath",
                 "type": "weapon",

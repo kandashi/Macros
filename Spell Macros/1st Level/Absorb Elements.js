@@ -1,6 +1,11 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target 
-
-let target = canvas.tokens.get(args[1]); //grab target token
+//DAE Item Macro, 
+// 3 Item effects: 1 -> damage resistance (any type)
+//               2 -> bonus melee damage (no value)
+//               3 -> item macro (@item.level)
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
 
 if (args[0] === "on") {
     new Dialog({
@@ -21,42 +26,18 @@ if (args[0] === "on") {
         //select element type
         buttons: {
             yes: {
-                icon: '<i class="fas fa-check"></i>',
-                label: 'Yes',
+                icon: '<i class="fas fa-bolt"></i>',
+                label: 'Select',
                 callback: async (html) => {
                     let element = html.find('#element').val();
-                    let res =  target.actor.effects.find(i => i.data.label === "Absorb Elements R");
-                    let changes = res.data.changes;
+                    let effect =  tactor.effects.find(i => i.data.label === "Absorb Elements");
+                    let changes = effect.data.changes;
                     changes[0].value = element;
-                    await res.update({changes}); //push new resistance
-
-                    let weapons = target.actor.items.filter(i => i.data.type === `weapon`); //filter items for weapons
-                    for (let weapon of weapons) {
-                        if(weapon.data.data.actionType === "mwak"){
-                        let dice = `${args[2]}d6`;
-                        let copyWeapon = duplicate(weapon);
-                        let damageDice = copyWeapon.data.damage.parts;
-                        damageDice.push([dice, element]); // add new damage dice/element to weapons
-                        await target.actor.updateEmbeddedEntity("OwnedItem", copyWeapon); //update weapon
-                        }
-                    }
-
+                    changes[1].value = `${args[1]}d6 [${element}]`
+                    await effect.update({changes});
                 },
             },
         }
     }).render(true);
 }
-if (args[0] === "off") {
-    async function remove() {
-        let weapons = target.actor.items.filter(i => i.data.type === `weapon`); //filter weapons
-        for (let weapon of weapons) {
-            if(weapon.data.data.actionType === "mwak"){
-            let copyWeapon = duplicate(weapon);
-            let damageRow = copyWeapon.data.damage.parts.length - 1; // find last damage row (should be the applied one)
-            copyWeapon.data.damage.parts.splice(damageRow, 1); // remove damage row
-            await target.actor.updateEmbeddedEntity("OwnedItem", copyWeapon); //update weapon
-            }
-        }
-    }
-    remove();
-}
+

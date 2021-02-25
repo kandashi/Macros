@@ -1,24 +1,21 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target @abilities.(insert casting score).mod
+//DAE Item Macro Execute, Effect Value = @damage 
+//apply @mod damge of none type to the spell
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
+const target = canvas.tokens.get(lastArg.tokenId)
 
-
-let mod = args[2];
-let target = canvas.tokens.get(args[1]);
+let mod = args[1];
 
 if (args[0] === "on") {
-    ChatMessage.create({ content: "Heroism is applied to targets" })
-    const hookId = Hooks.on("updateCombat", (combat, update) => {
-        if (!("round" in update || "turn" in update)) return;
-        if (combat.combatant.tokenId === args[1]) {
-            target.actor.update({ "data.attributes.hp.temp": mod });
-            ChatMessage.create({ content: "Heroism continues on " + target.name })
-        }
-    });
-    target.actor.setFlag("world", "heroismUpdateCombatHookId", hookId);
-
+    ChatMessage.create({ content: `Heroism is applied to ${tactor.name}` })
 }
 if (args[0] === "off") {
-   let hookIdFlag = target.actor.getFlag("world", "heroismUpdateCombatHookId");
     ChatMessage.create({ content: "Heroism ends" });
-    Hooks.off("updateCombat", hookIdFlag);
-    target.actor.unsetFlag("world", "heroismUpdateCombatHookId");
+}
+if(args[0] === "each"){
+let bonus = mod > tactor.data.data.attributes.hp.temp ? mod : tactor.data.data.attributes.hp.temp
+    tactor.update({ "data.attributes.hp.temp": bonus });
+    ChatMessage.create({ content: "Heroism continues on " + tactor.name })
 }

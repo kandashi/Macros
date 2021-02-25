@@ -1,19 +1,20 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target @item.level
-let target = canvas.tokens.get(args[1]); //grab target token
+//DAE Item Macro, Effect Value = @item.level
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
+const DAEitem = lastArg.efData.flags.dae.itemData
 
 if (args[0] === "on") {
-    let damage = (5 * args[2]); // calculate damage/tempHP values
-    target.actor.update({ "data.attributes.hp.temp": damage }); // add tempHP
-    target.actor.createOwnedItem({ // create item to deal damage to target, no "auto" damage
+    let damage = (5 * args[1]); // calculate damage/tempHP values
+    tactor.update({ "data.attributes.hp.temp": damage }); // add tempHP
+    tactor.createOwnedItem({ // create item to deal damage to target, no "auto" damage
 
         "name": "Armor of Agathys",
         "type": "weapon",
         "data": {
-            "ability": "",
             "actionType": "other",
-            "attackBonus": 0,
             "chatFlavor": "Armor of Agathys damage",
-            "critical": null,
             "damage": {
                 "parts": [
                     [
@@ -21,44 +22,22 @@ if (args[0] === "on") {
                         "cold"
                     ]
                 ],
-                "versatile": ""
             },
-            "formula": "",
-            "save": {
-                "ability": "",
-                "dc": null,
-                "scaling": "spell"
-            },
-            "armor": {
-                "value": 10
-            },
-            "hp": {
-                "value": 0,
-                "max": 0,
-                "dt": null,
-                "conditions": ""
-            },
-            "weaponType": "natural",
-            "proficient": true
         },
-        "sort": 1000000,
         "flags": {
             "midi-qol": {
                 "onUseMacroName": ""
             },
-            "exportSource": {
-                "world": "dae",
-                "system": "dnd5e",
-                "coreVersion": "0.7.7",
-                "systemVersion": "1.1.1"
-            }
+            "DAE": {
+                "ArmorOfAgathys": {
+                    "ActorId" : tactor.id
+                }
+            },
         },
-        "img": "icons/svg/mystery-man.svg",
-        "effects": [],
-        "_id": "WA41Lr2Wd4M7UJFm"
+        "img": DAEitem.img,
     });
 }
 if (args[0] === "off") {
-    let item = target.actor.items.find(i => i.name === "Armor of Agathys"); // find item 
-    item.delete(); //delete item
+    let item = tactor.items.find(i => i.flags?.DAE?.ArmorOfAgathys?.ActorId === tactor.id) // find item 
+    tactor.deleteEmbeddedEntity("OwnedItem", item._id); //delete item
 }

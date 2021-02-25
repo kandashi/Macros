@@ -1,6 +1,8 @@
+//CURRENTLY BROKEN DO NOT USE
+
 //DAE Macro Execute, Effect Value = "Macro Name" (time of duration) @attributes.spelldc
 // Target - Self, clear all spell effects in the Action field
-
+/*
 if (args[0] === "off") {
     let effect = actor.effects.find(i => i.data.label === "Searing Smite");
     let timeRemaining = args[1] - (effect.duration.duration - effect.duration.remaining);
@@ -46,3 +48,4 @@ if (args[0] === "off") {
         });
     }
 }
+*/

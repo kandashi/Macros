@@ -1,7 +1,10 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target 
+//DAE Item Macro Execute
 
-let target = canvas.tokens.get(args[1]);
-let weapons = target.actor.items.filter(i => i.data.type === `weapon`);
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
+let weapons = tactor.items.filter(i => i.data.type === `weapon`);
 
 /**
  * For every str weapon, update the damage formulas to half the damage, set flag of original
@@ -23,7 +26,6 @@ if (args[0] === "on") {
 if (args[0] === "off") {
     for (let weapon of weapons) {
         let parts = weapon.getFlag('world', 'RayOfEnfeeblement');
-
         weapon.update({ "data.damage.parts": parts });
     }
 }

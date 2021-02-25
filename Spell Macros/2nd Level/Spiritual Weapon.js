@@ -1,17 +1,69 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target @item.level @item
+//DAE Item Macro Execute
+// Set spell to self cast, no damage/attack roll
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
+const target = canvas.tokens.get(lastArg.tokenId) || token;
 
-let target = canvas.tokens.get(args[1])
+const castingItem = lastArg.efData.flags.dae.itemData
+let data = {}
 
 /**
  * Create Spiritual Weapon item in inventory
  */
 if (args[0] === "on") {
-  let damage = Math.floor((args[2] / 2));
-  let attackMod = args[3].data.ability;
-  let image = args[3].img;
-  await target.actor.createOwnedItem(
+  let damage = Math.floor((castingItem.data.level / 2));
+  let image = castingItem.img;
+
+  let range = MeasuredTemplate.create({
+    t: "circle",
+    user: game.user._id,
+    x: target.x + canvas.grid.size / 2,
+    y: target.y + canvas.grid.size / 2,
+    direction: 0,
+    distance: 60,
+    borderColor: "#FF0000",
+    flags: {
+      DAESRD: {
+        SpiritualWeaponRange: {
+          ActorId: tactor.id
+        }
+      }
+    }
+    //fillColor: "#FF3366",
+  });
+  range.then(result => {
+    let templateData = {
+      t: "rect",
+      user: game.user._id,
+      distance: 7,
+      direction: 45,
+      x: 0,
+      y: 0,
+      flags: {
+        DAESRD: {
+          SpiritualWeapon: {
+            ActorId: tactor.id
+          }
+        }
+      },
+      fillColor: game.user.color
+    }
+    Hooks.once("createMeasuredTemplate", deleteTemplates);
+
+    let template = new game.dnd5e.canvas.AbilityTemplate(templateData)
+    template.actorSheet = tactor.sheet;
+    template.drawPreview()
+
+    async function deleteTemplates(scene, template) {
+      let removeTemplates = canvas.templates.placeables.filter(i => i.data.flags.DAESRD?.SpiritualWeaponRange?.ActorId === tactor.id);
+      await canvas.templates.deleteMany([removeTemplates[0].id]);
+    };
+  })
+  await tactor.createOwnedItem(
     {
-      "name": "Spiritual Weapon Summon",
+      "name": "Summoned Spiritual Weapon",
       "type": "weapon",
       "data": {
         "equipped": true,
@@ -28,7 +80,7 @@ if (args[0] === "on") {
           "value": 5,
           "units": "ft"
         },
-        "ability": attackMod,
+        "ability": "",
         "actionType": "msak",
         "attackBonus": "0",
         "chatFlavor": "",
@@ -44,13 +96,23 @@ if (args[0] === "on") {
         "weaponType": "simpleM",
         "proficient": true
       },
+      "flags": {
+        "DAESRD": {
+          "SpiritualWeapon":
+            target.actor.id
+        }
+      },
       "img": `${image}`,
     },
   );
+  ui.notifications.notify("Weapon created in your inventory")
+
 }
 
-// Delete meteors
+// Delete Spitirual Weapon and template
 if (args[0] === "off") {
-  let item = target.actor.data.items.find(i => i.name === "Spiritual Weapon Summon")
-  target.actor.deleteOwnedItem(item._id)
+  let removeItem = tactor.items.find(i => i.data.flags?.DAESRD?.SpiritualWeapon === tactor.id)
+  let template = canvas.templates.placeables.filter(i => i.data.flags.DAESRD.SpiritualWeapon?.ActorId === tactor.id)
+  if(removeItem) await tactor.deleteOwnedItem(removeItem.id);
+  if(template) await canvas.templates.deleteMany(template[0].id)
 }

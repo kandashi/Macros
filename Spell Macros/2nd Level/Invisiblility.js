@@ -1,6 +1,8 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target
+//DAE Item Macro
+const lastArg = args[args.length - 1];
+const target = canvas.tokens.get(lastArg.tokenId)
 
-let target = canvas.tokens.get(args[1])
+
 if (args[0] === "on") {
     ChatMessage.create({ content: `${target.name} turns invisible` });
     target.update({ "hidden": true });

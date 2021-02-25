@@ -1,6 +1,10 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target 
+//DAE Item Macro Execute
 
-let target = canvas.tokens.get(args[1]);
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
+const target = canvas.tokens.get(lastArg.tokenId)
 
 if (args[0] === "on") {
     new Dialog({
@@ -9,7 +13,7 @@ if (args[0] === "on") {
             one: {
                 label: "Fireworks",
                 callback: async () => {
-                    let save = await target.actor.rollAbilitySave("con");
+                    let save = await tactor.rollAbilitySave("con");
                     debugger;
                     if (save.total < args[2]) {
                         game.cub.addCondition("Blinded", target);

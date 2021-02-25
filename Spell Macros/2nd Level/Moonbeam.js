@@ -1,43 +1,44 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target @item.level
+//DAE Item Macro Execute, Effect Value = @attributes.spelldc
 
-let target = canvas.tokens.get(args[1])
-let data = {}
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
+
+const DAEItem = lastArg.efData.flags.dae.itemData
+const saveData = DAEItem.data.save
+const DC = args[1]
 /**
  * Create Moonbeam item in inventory
  */
 if (args[0] === "on") {
-  let damage = args[2];
-  await target.actor.createOwnedItem(
+  let templateData = {
+    t: "circle",
+    user: game.user._id,
+    distance: 5,
+    direction: 0,
+    x: 0,
+    y: 0,
+    flags: {
+        DAESRD: {
+            Moonbeam: {
+                ActorId: tactor.id
+            }
+        }
+    },
+    fillColor: game.user.color
+}
+let template = new game.dnd5e.canvas.AbilityTemplate(templateData)
+template.actorSheet = tactor.sheet;
+template.drawPreview()
+
+  let damage = DAEItem.data.level;
+  await tactor.createOwnedItem(
     {
       "name": "Moonbeam repeating",
       "type": "spell",
       "data": {
-        "description": {
-          "value": "",
-          "chat": "",
-          "unidentified": ""
-        },
-        "source": "",
-        "activation": {
-          "type": "special",
-          "cost": 0,
-          "condition": ""
-        },
-        "duration": {
-          "value": null,
-          "units": ""
-        },
-        "target": {
-          "value": 5,
-          "width": null,
-          "units": "ft",
-          "type": "cylinder"
-        },
-        "range": {
-          "value": 120,
-          "long": null,
-          "units": "ft"
-        },
+        "source": "Casting Moonbeam",
         "ability": "",
         "actionType": "save",
         "attackBonus": 0,
@@ -48,12 +49,11 @@ if (args[0] === "on") {
               "radiant"
             ]
           ],
-          "versatile": ""
         },
         "formula": "",
         "save": {
           "ability": "con",
-          "dc": null,
+          "dc": saveData.dc,
           "scaling": "spell"
         },
         "level": 0,
@@ -62,18 +62,17 @@ if (args[0] === "on") {
           "mode": "prepared",
           "prepared": false
         },
-        "scaling": {
-          "mode": "none",
-          "formula": ""
-        }
+
       },
-      "img": "systems/dnd5e/icons/spells/beam-blue-3.jpg",
+      "img": DAEItem.img,
     }
   );
 }
 
 // Delete Moonbeam
 if (args[0] === "off") {
-  let item = target.actor.data.items.find(i => i.name === "Moonbeam repeating" && i.type === "spell")
-  target.actor.deleteOwnedItem(item._id)
+  let casterItem = tactor.data.items.find(i => i.name === "Moonbeam repeating" && i.type === "spell")
+  tactor.deleteOwnedItem(casterItem._id)
+  let template = canvas.templates.placeables.filter(i => i.data.flags.DAESRD?.Moonbeam?.ActorId === tactor.id)
+    canvas.templates.deleteMany(template[0].id)
 }

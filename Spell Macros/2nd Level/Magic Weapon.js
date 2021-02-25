@@ -1,8 +1,13 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target
+//DAE Item Macro Execute
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
+const DAEItem = lastArg.efData.flags.dae.itemData
 
-let target = canvas.tokens.get(args[1]);
-let weapons = target.actor.items.filter(i => i.data.type === `weapon`);
+let weapons = tactor.items.filter(i => i.data.type === `weapon`);
 let weapon_content = ``;
+
 function value_limit(val, min, max) {
     return val < min ? min : (val > max ? max : val);
 };
@@ -33,20 +38,23 @@ if (args[0] === "on") {
                 label: `Ok`,
                 callback: (html) => {
                     let itemId = html.find('[name=weapons]')[0].value;
-                    let item = target.actor.items.get(itemId);
-                    let copy_item = duplicate(item);
-                    let spellLevel = Math.floor(args[2] / 2);
+                    let weaponItem = tactor.items.get(itemId);
+                    let copy_item = duplicate(weaponItem);
+                    let spellLevel = Math.floor(DAEItem.data.level / 2);
                     let bonus = value_limit(spellLevel, 1, 3);
                     let wpDamage = copy_item.data.damage.parts[0][0];
-                    target.actor.setFlag(`world`, `magicWeapon`, {
-                        damage: item.data.attackBonus,
+                    let verDamage = copy_item.data.damage.versatile;
+                    DAE.setFlag(tactor, `magicWeapon`, {
+                        damage: weaponItem.data.data.attackBonus,
                         weapon: itemId,
                         weaponDmg: wpDamage,
+                        verDmg: verDamage,
                     }
                     );
-                    copy_item.data.attackBonus = (copy_item.data.attackBonus + bonus);
+                    copy_item.data.attackBonus = `${parseInt(copy_item.data.attackBonus) + bonus}`;
                     copy_item.data.damage.parts[0][0] = (wpDamage + " + " + bonus);
-                    target.actor.updateEmbeddedEntity("OwnedItem", copy_item);
+                    if(verDamage !== "" && verDamage !== null) copy_item.data.damage.versatile = (verDamage + " + " + bonus);
+                    tactor.updateEmbeddedEntity("OwnedItem", copy_item);
                 }
             },
             Cancel:
@@ -59,11 +67,12 @@ if (args[0] === "on") {
 
 //Revert weapon and unset flag.
 if (args[0] === "off") {
-    let { damage, weapon, weaponDmg } = target.actor.getFlag('world', 'magicWeapon');
-    let item = target.actor.items.get(weapon);
-    let copy_item = duplicate(item);
-    copy_item.data.attackBonus = (copy_item.data.attackBonus - damage);
+    let { damage, weapon, weaponDmg, verDmg } = DAE.getFlag(tactor, 'magicWeapon');
+    let weaponItem = tactor.items.get(weapon);
+    let copy_item = duplicate(weaponItem);
+    copy_item.data.attackBonus = `${parseInt(copy_item.data.attackBonus) - damage}`;
     copy_item.data.damage.parts[0][0] = weaponDmg;
-    target.actor.updateEmbeddedEntity("OwnedItem", copy_item);
-    target.actor.unsetFlag(`world`, `magicWeapon`);
+    if(verDmg !== "" && verDmg !== null) copy_item.data.damage.versatile = verDmg;
+    tactor.updateEmbeddedEntity("OwnedItem", copy_item);
+    DAE.unsetFlag(tactor, `magicWeapon`);
 }

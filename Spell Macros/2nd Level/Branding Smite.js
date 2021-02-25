@@ -1,3 +1,5 @@
+//BROKEN DO NOT USE
+
 //DAE Macro Execute, Effect Value = "Macro Name" (time of duration)
 
 if (args[0] === "off") {

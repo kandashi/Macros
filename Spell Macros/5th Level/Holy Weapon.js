@@ -1,7 +1,11 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target
+//DAE Item Macro 
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
+const DAEItem = lastArg.efData.flags.dae.itemData
 
-let target = canvas.tokens.get(args[1]);
-let weapons = target.actor.items.filter(i => i.data.type === `weapon`);
+let weapons = tactor.items.filter(i => i.data.type === `weapon`);
 let weapon_content = ``;
 
 //Generate possible weapons
@@ -29,12 +33,12 @@ if (args[0] === "on") {
                 label: `Ok`,
                 callback: (html) => {
                     let itemId = html.find('[name=weapons]')[0].value;
-                    let weapon = target.actor.items.get(itemId);
+                    let weapon = tactor.items.get(itemId);
                     let copyWeapon = duplicate(weapon);
                     let damageDice = copyWeapon.data.damage.parts
                     damageDice.push(["2d8", "radiant"])
                     target.actor.updateEmbeddedEntity("OwnedItem", copyWeapon)
-                    target.actor.setFlag('world', 'holyWeapon', {
+                    DAE.setFlag(tactor, 'holyWeapon', {
                         weaponId: itemId
                     })
                 }
@@ -48,7 +52,7 @@ if (args[0] === "on") {
 }
 
 if (args[0] === "off") {
-    let flag = await target.actor.getFlag('world', 'elementalWeapon')
+    let flag = await tactor.getFlag('world', 'elementalWeapon')
     let Weapon = flag.weaponId;
     let copy_item = duplicate(Weapon);
     let weaponDamageParts = copy_item.data.damage.parts;
@@ -56,7 +60,7 @@ if (args[0] === "off") {
         if (weaponDamageParts[i][0] === "2d8" && weaponDamageParts[i][1] === "radiant") {
             weaponDamageParts.splice(i, 1)
             target.actor.updateEmbeddedEntity("OwnedItem", copy_item);
-            target.actor.unsetFlag(`world`, `elemntalWeapon`);
+            DAE.unsetFlag(tactor, `elemntalWeapon`);
             return;
         }
     }

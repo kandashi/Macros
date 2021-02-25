@@ -1,45 +1,42 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target
-let target = canvas.tokens.get(args[1]);
+//DAE Macro Execute, Effect Value = "Macro Name" @tactor
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
 
 /**
  * Set hooks to fire on combat update and world time update
  */
 if (args[0] === "on") {
 
-    // If combatant is effected, update HP by 1
-    const hookId = Hooks.on("updateCombat", (combat, updates, options, id) => {
-        if (combat.combatant.actor.id === target.actor.id) {
-            target.actor.applyDamage(-1);
-            ChatMessage.create({ content: `${target.actor.name} gains 1 hp` });
-        }
-    },
-    );
-
     // If 6s elapses, update HP by one
     const timeHookId = Hooks.on("updateWorldTime", (currentTime, updateInterval) => {
         if (game.combats === []) return;
-        let effect = target.actor.effects.find(i => i.data.label === "Regenerate");
+        let effect = tactor.effects.find(i => i.data.label === "Regenerate");
         let applyTime = effect.data.duration.startTime;
         let expireTime = applyTime + effect.data.duration.seconds;
         let healing = roundCount(currentTime, updateInterval, applyTime, expireTime);
-        console.log(`${target.name} healed for ${healing}`);
-        target.actor.applyDamage(-healing);
+        console.log(`${tactor.name} healed for ${healing}`);
+        tactor.applyDamage(-healing);
     }
     );
 
-    target.actor.setFlag("world", "Regenerate", {
-        combatHook: hookId,
+    tactor.setFlag("world", "Regenerate", {
         timeHook: timeHookId
     }
     );
 }
 
+if (args[0] === "each") {
+    tactor.applyDamage(-1);
+    ChatMessage.create({ content: `${tactor.name} gains 1 hp` });
+}
+
 if (args[0] === "off") {
     async function RegenerateOff() {
-        let flag = await target.actor.getFlag('world', 'Regenerate');
-        Hooks.off("updateCombat", flag.combatHook);
+        let flag = await tactor.getFlag('world', 'Regenerate');
         Hooks.off("updateWorldTime", flag.timeHook);
-        target.actor.unsetFlag("world", "Regenerate");
+        tactor.unsetFlag("world", "Regenerate");
         console.log("Regenerate removed");
     };
     RegenerateOff();

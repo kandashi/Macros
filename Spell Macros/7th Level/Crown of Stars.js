@@ -1,14 +1,19 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target @item.level
+//DAE Item Macro 
 
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
 
-let target = canvas.tokens.get(args[1])
+const DAEItem = lastArg.efData.flags.dae.itemData
+const saveData = DAEItem.data.save
 
 /**
  * Add crown of starts item to target, update to fix count and self-consumption.
  */
 if (args[0] === "on") {
-  let starCount = 7 + ((args[2] - 7) * 2)
-  await target.actor.createOwnedItem(
+  let starCount = 7 + ((DAEItem.data.level - 7) * 2)
+  await tactor.createOwnedItem(
     {
       "name": "Crown of Stars",
       "type": "weapon",
@@ -22,8 +27,6 @@ if (args[0] === "on") {
         },
         "target": {
           "value": 1,
-          "width": null,
-          "units": "",
           "type": "creature",
         },
         "range": {
@@ -52,32 +55,23 @@ if (args[0] === "on") {
           ],
           "versatile": ""
         },
-        "formula": "",
-        "save": {
-          "ability": "",
-          "dc": null,
-          "scaling": "spell",
-        },
-        "armor": {
-          "value": 10,
-        },
+
         "weaponType": "simpleR",
         "proficient": true,
       },
-      "sort": 4000000,
       "img": "systems/dnd5e/icons/spells/fireball-sky-1.jpg",
     },
   )
-  let item = target.actor.data.items.find(i => i.name === "Crown of Stars")
+  let item = tactor.data.items.find(i => i.name === "Crown of Stars")
   let copy_item = duplicate(item)
   copy_item.data.consume.target = copy_item._id;
-  target.actor.updateEmbeddedEntity("OwnedItem", copy_item);
+  tactor.updateEmbeddedEntity("OwnedItem", copy_item);
 }
 
 /**
  * Remove crown of starts items
  */
 if (args[0] === "off") {
-  let item = target.actor.data.items.find(i => i.name === "Crown of Stars")
-  target.actor.deleteOwnedItem(item._id)
+  let item = tactor.data.items.find(i => i.name === "Crown of Stars")
+  tactor.deleteOwnedItem(item._id)
 }

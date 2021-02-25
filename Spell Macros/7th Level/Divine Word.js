@@ -1,4 +1,4 @@
-////DAE Macro Execute, Effect Value = "Macro Name" @target
+////DAE Item Macro 
 
 /**
  * Apply Divine Word to targeted tokens
@@ -6,8 +6,11 @@
  * @param {Boolean} linked 
  */
 
-let ActorUpdate = game.macros.getName("ActorUpdate");
-let target = canvas.tokens.get(args[1]);
+const lastArg = args[args.length - 1];
+let tactor;
+if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
+else tactor = game.actors.get(lastArg.actorId);
+const target = canvas.tokens.get(lastArg.tokenId)
 
 async function DivineWordApply(target, targetHp, linked) {
 
@@ -36,8 +39,7 @@ async function DivineWordApply(target, targetHp, linked) {
     }
 }
 if (args[0] === "on") {
-        let targetHp = null;
-        let linked = null;
+        let targetHp, linked ;
         if (target.data.actorLink == true) {
             targetHp = target.actor.data.data.attributes.hp.value
             linked = true
@@ -48,4 +50,3 @@ if (args[0] === "on") {
         DivineWordApply(target, targetHp, linked)
 }
 
-if(args[0] === "off") return;

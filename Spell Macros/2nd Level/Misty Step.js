@@ -54,7 +54,7 @@ if (args[0] === "on") {
         async function deleteTemplatesAndMove(scene, template) {
 
             let removeTemplates = canvas.templates.placeables.filter(i => i.data.flags.DAESRD?.MistyStep?.ActorId === tactor.id);
-            await target.update({ x: template.x, y: template.y })
+            await target.update({ x: template.x, y: template.y } , {animate : false})
             await canvas.templates.deleteMany([removeTemplates[0].id, removeTemplates[1].id]);
             await tactor.deleteEmbeddedEntity("ActiveEffect", lastArg.effectId); 
         };

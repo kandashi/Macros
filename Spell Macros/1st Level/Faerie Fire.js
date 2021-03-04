@@ -7,50 +7,56 @@ let target = canvas.tokens.get(lastArg.tokenId)
 const DAEItem = lastArg.efData.flags.dae.itemData
 const saveData = DAEItem.data.save
 
-if(args[0]=== "on"){
+if (args[0] === "on") {
 
     new Dialog({
-        title: "Choose the colour for Faerie Fire",
+        title: `Choose the colour for Faerie Fire on ${target.name}`,
         buttons: {
             one: {
                 label: "Blue",
-                callback: () => {
-                    DAE.setFlag(tactor, 'FaerieFire', {
-                        color: target.data.lightColor,
+                callback: async () => {
+                    let color = target.data.lightColor ? target.data.lightColor : "";
+                    let dimLight = target.data.dimLight ? target.data.dimLight : "0"
+                    await DAE.setFlag(target, 'FaerieFire', {
+                        color: color,
                         alpha: target.data.lightAlpha,
-                        dimLight: target.data.dimLight
+                        dimLight: dimLight
                     });
-                    target.update({"lightColor": "#5ab9e2", "lightAlpha" : 0.16, "dimLight" : "10"})
+                    target.update({ "lightColor": "#5ab9e2", "lightAlpha": 0.64, "dimLight": "10" })
                 }
             },
             two: {
                 label: "Green",
-                callback: () => {
-                    DAE.setFlag(tactor, 'FaerieFire', {
-                        color: target.data.lightColor,
+                callback: async () => {
+                    let color = target.data.lightColor ? target.data.lightColor : "";
+                    let dimLight = target.data.dimLight ? target.data.dimLight : "0"
+                    await DAE.setFlag(target, 'FaerieFire', {
+                        color: color,
                         alpha: target.data.lightAlpha,
-                        dimLight: target.data.dimLight
+                        dimLight: dimLight
                     });
-                    target.update({"lightColor": "#55d553", "lightAlpha" : 0.16,"dimLight" : "10"})
+                    target.update({ "lightColor": "#55d553", "lightAlpha": 0.64, "dimLight": "10" })
                 }
             },
             three: {
-                label: "Other",
-                callback: () => {
-                    DAE.setFlag(tactor, 'FaerieFire', {
-                        color: target.data.lightColor,
+                label: "Purple",
+                callback: async () => {
+                    let color = target.data.lightColor ? target.data.lightColor : "";
+                    let dimLight = target.data.dimLight ? target.data.dimLight : "0"
+                    await DAE.setFlag(target, 'FaerieFire', {
+                        color: color,
                         alpha: target.data.lightAlpha,
-                        dimLight: target.data.dimLight
+                        dimLight: dimLight
                     });
-                    target.update({"lightColor": "#844ec6", "lightAlpha" : 0.16,"dimLight" : "10"})
+                    target.update({ "lightColor": "#844ec6", "lightAlpha": 0.64, "dimLight": "10" })
                 }
             }
         }
     }).render(true);
 }
 
-if(args[0] === "off"){
-    let {color, alpha, dim} = await DAE.getFlag(tactor, "FaerieFire")
-    target.update({"lightColor": color, "lightAlpha": alpha,"dimLight" : dim})
+if (args[0] === "off") {
+    let { color, alpha, dimLight } = await DAE.getFlag(target, "FaerieFire")
+    target.update({ "lightColor": color, "lightAlpha": alpha, "dimLight": dimLight })
     DAE.unsetFlag(tactor, "FaerieFire")
 }

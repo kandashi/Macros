@@ -77,7 +77,7 @@ if (args[0] === "off") {
     if (weaponDamageParts[i][0] === diceNum && weaponDamageParts[i][1] === elementType){
       weaponDamageParts.splice(i, 1)
       tactor.updateEmbeddedEntity("OwnedItem", copy_item);
-      DAE.unsetFlag(tactor, `elemntalWeapon`);
+      DAE.unsetFlag(tactor, `elementalWeapon`);
       return;
     }
   }

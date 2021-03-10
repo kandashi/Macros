@@ -40,6 +40,9 @@ template.drawPreview()
       "data": {
         "source": "Casting Moonbeam",
         "ability": "",
+        "description": {
+          "value": "half damage on save" 
+        },
         "actionType": "save",
         "attackBonus": 0,
         "damage": {

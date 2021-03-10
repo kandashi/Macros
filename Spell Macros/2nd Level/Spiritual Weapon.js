@@ -1,4 +1,4 @@
-//DAE Item Macro Execute
+//DAE Item Macro Execute, value = @item.level
 // Set spell to self cast, no damage/attack roll
 const lastArg = args[args.length - 1];
 let tactor;
@@ -13,7 +13,7 @@ let data = {}
  * Create Spiritual Weapon item in inventory
  */
 if (args[0] === "on") {
-  let damage = Math.floor((castingItem.data.level / 2));
+  let damage = Math.floor(Math.floor(args[1] / 2));
   let image = castingItem.img;
 
   let range = MeasuredTemplate.create({

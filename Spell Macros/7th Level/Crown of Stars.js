@@ -72,6 +72,6 @@ if (args[0] === "on") {
  * Remove crown of starts items
  */
 if (args[0] === "off") {
-  let item = tactor.data.items.find(i => i.name === "Crown of Stars")
+  let item = tactor.data.items.find(i => i.name === "Summoned Crown of Stars")
   tactor.deleteOwnedItem(item._id)
 }

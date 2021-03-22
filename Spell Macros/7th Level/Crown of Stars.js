@@ -15,7 +15,7 @@ if (args[0] === "on") {
   let starCount = 7 + ((DAEItem.data.level - 7) * 2)
   await tactor.createOwnedItem(
     {
-      "name": "Crown of Stars",
+      "name": "Summoned Crown of Stars",
       "type": "weapon",
       "data": {
         "description": {
@@ -62,7 +62,7 @@ if (args[0] === "on") {
       "img": "systems/dnd5e/icons/spells/fireball-sky-1.jpg",
     },
   )
-  let item = tactor.data.items.find(i => i.name === "Crown of Stars")
+  let item = tactor.data.items.find(i => i.name === "Summoned Crown of Stars")
   let copy_item = duplicate(item)
   copy_item.data.consume.target = copy_item._id;
   tactor.updateEmbeddedEntity("OwnedItem", copy_item);

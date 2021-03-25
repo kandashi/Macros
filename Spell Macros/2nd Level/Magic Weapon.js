@@ -11,10 +11,13 @@ let weapon_content = ``;
 function value_limit(val, min, max) {
     return val < min ? min : (val > max ? max : val);
 };
-
 //Filter for weapons
 for (let weapon of weapons) {
-    weapon_content += `<option value=${weapon.id}>${weapon.name}</option>`;
+    weapon_content += `<label class="radio-label">
+    <input type="radio" name="weapon" value="${weapon.id}">
+    <img src="${weapon.img}" style="border:0px; width: 50px; height:50px;">
+    ${weapon.data.name}
+  </label>`;
 }
 
 /**
@@ -22,12 +25,47 @@ for (let weapon of weapons) {
  */
 if (args[0] === "on") {
     let content = `
-    <div class="form-group">
-    <label>Weapons : </label>
-    <select name="weapons">
-        ${weapon_content}
-        </select>
-    </div>`;
+    <style>
+    .magicWeapon .form-group {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        align-items: flex-start;
+      }
+      
+      .magicWeapon .radio-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        justify-items: center;
+        flex: 1 0 25%;
+        line-height: normal;
+      }
+      
+      .magicWeapon .radio-label input {
+        display: none;
+      }
+      
+      .magicWeapon img {
+        border: 0px;
+        width: 50px;
+        height: 50px;
+        flex: 0 0 50px;
+        cursor: pointer;
+      }
+          
+      /* CHECKED STYLES */
+      .magicWeapon [type=radio]:checked + img {
+        outline: 2px solid #f00;
+      }
+    </style>
+    <form class="magicWeapon">
+      <div class="form-group" id="weapons">
+          ${weapon_content}
+      </div>
+    </form>
+    `;
 
     new Dialog({
         content,
@@ -37,7 +75,7 @@ if (args[0] === "on") {
             {
                 label: `Ok`,
                 callback: (html) => {
-                    let itemId = html.find('[name=weapons]')[0].value;
+                    let itemId = $("input[type='radio'][name='weapon']:checked").val();
                     let weaponItem = tactor.items.get(itemId);
                     let copy_item = duplicate(weaponItem);
                     let spellLevel = Math.floor(DAEItem.data.level / 2);
@@ -53,7 +91,7 @@ if (args[0] === "on") {
                     );
                     copy_item.data.attackBonus = `${parseInt(copy_item.data.attackBonus) + bonus}`;
                     copy_item.data.damage.parts[0][0] = (wpDamage + " + " + bonus);
-                    if(verDamage !== "" && verDamage !== null) copy_item.data.damage.versatile = (verDamage + " + " + bonus);
+                    if (verDamage !== "" && verDamage !== null) copy_item.data.damage.versatile = (verDamage + " + " + bonus);
                     tactor.updateEmbeddedEntity("OwnedItem", copy_item);
                 }
             },
@@ -72,7 +110,7 @@ if (args[0] === "off") {
     let copy_item = duplicate(weaponItem);
     copy_item.data.attackBonus = `${parseInt(copy_item.data.attackBonus) - damage}`;
     copy_item.data.damage.parts[0][0] = weaponDmg;
-    if(verDmg !== "" && verDmg !== null) copy_item.data.damage.versatile = verDmg;
+    if (verDmg !== "" && verDmg !== null) copy_item.data.damage.versatile = verDmg;
     tactor.updateEmbeddedEntity("OwnedItem", copy_item);
     DAE.unsetFlag(tactor, `magicWeapon`);
 }

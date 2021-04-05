@@ -16,7 +16,7 @@ else tactor = game.actors.get(lastArg.actorId);
 if (args[0] === "on") {
     let effect = tactor.effects.find(i => i.data.label === "Branding Smite");
     let changes = effect.data.changes;
-    changes[1].value = `${args[2]}d6[radient]`
+    changes[1].value = `${args[2]}d6[radiant]`
     await effect.update({ changes });
 }
 

@@ -22,8 +22,7 @@ if(args[0] === "on"){
 
 if (args[0] === "off") {
     let timeRemaining = lastArg.efData.duration.rounds - (game.combats.active.current.round - lastArg.efData.duration.startRound)
-    let gameUser = game.users.find(u => u.data.character === actor._id)
-    let targets = gameUser.targets
+    let targets = game.updateser.targets
     const GMmacro = game.macros.getName("GM SearingSmite")
     for (let smiteTarget of targets) {
         GMmacro.execute("apply", smiteTarget.id, timeRemaining, args[2])

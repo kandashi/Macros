@@ -1,4 +1,4 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @damage
+//DAE Macro , Effect Value = @damage
 
 
 const lastArg = args[args.length - 1];

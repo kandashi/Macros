@@ -1,4 +1,4 @@
-//DAE Item Macro
+//DAE Item Macro, no arguments passed
 const lastArg = args[args.length - 1];
 const target = canvas.tokens.get(lastArg.tokenId)
 

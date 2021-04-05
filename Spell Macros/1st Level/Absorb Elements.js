@@ -1,7 +1,9 @@
-//DAE Item Macro, 
-// 3 Item effects: 1 -> damage resistance (any type)
+//DAE Macro, Either ItemMacro or MacroExecute
+// Item -> self target, duration of 1 round, special expiry of "next hit"
+// 
+// DAE 3 effects: 1 -> damage resistance (any type)
 //               2 -> bonus melee damage (no value)
-//               3 -> item macro (@item.level)
+//               3 -> item macro with value of @item.level
 const lastArg = args[args.length - 1];
 let tactor;
 if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;

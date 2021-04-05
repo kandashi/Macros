@@ -1,4 +1,6 @@
-//DO NOT USE//
+//Set as a midi qol "OnUse" macro
+// change the spell damage type to "no damage"
+// Set the macro as "run as GM"
 
 let sleepHp = args[0].damageTotal;
 
@@ -10,9 +12,10 @@ console.log(`starting Sleep macro with sleepHp[${sleepHp}]`);
 
 // Get Targets
 let targets = args[0].targets
+let newTargets = targets.map(a => canvas.tokens.get(a._id))
 
 // Sort targets by HP ascending
-targets = targets.sort(function(a, b) {
+newTargets = newTargets.sort(function(a, b) {
   const hpValueOfA = a.actor.data.data.attributes.hp.value;
   const HpValueOfB = b.actor.data.data.attributes.hp.value;
   return hpValueOfA - HpValueOfB;
@@ -20,7 +23,7 @@ targets = targets.sort(function(a, b) {
 
 let remainingSleepHp = sleepHp;
 const condition = "Unconscious";
-for(let target of targets) {
+for(let target of newTargets) {
   // Skip targets already unconscious
   if(await game.cub.hasCondition(condition, target.actor)) {
     console.log(`${target.actor.name} is already asleep, skipping it.`);

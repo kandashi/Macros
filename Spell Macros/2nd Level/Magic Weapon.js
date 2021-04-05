@@ -1,4 +1,4 @@
-//DAE Item Macro Execute
+//DAE Item Macro Execute, arguments = @item.level
 const lastArg = args[args.length - 1];
 let tactor;
 if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
@@ -89,6 +89,7 @@ if (args[0] === "on") {
                         verDmg: verDamage,
                     }
                     );
+                    if(copy_item.data.attackBonus === "") copy_item.data.attackBonus = "0"
                     copy_item.data.attackBonus = `${parseInt(copy_item.data.attackBonus) + bonus}`;
                     copy_item.data.damage.parts[0][0] = (wpDamage + " + " + bonus);
                     if (verDamage !== "" && verDamage !== null) copy_item.data.damage.versatile = (verDamage + " + " + bonus);
@@ -108,7 +109,7 @@ if (args[0] === "off") {
     let { damage, weapon, weaponDmg, verDmg } = DAE.getFlag(tactor, 'magicWeapon');
     let weaponItem = tactor.items.get(weapon);
     let copy_item = duplicate(weaponItem);
-    copy_item.data.attackBonus = `${parseInt(copy_item.data.attackBonus) - damage}`;
+    copy_item.data.attackBonus = damage;
     copy_item.data.damage.parts[0][0] = weaponDmg;
     if (verDmg !== "" && verDmg !== null) copy_item.data.damage.versatile = verDmg;
     tactor.updateEmbeddedEntity("OwnedItem", copy_item);

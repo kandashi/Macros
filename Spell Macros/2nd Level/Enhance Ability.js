@@ -1,4 +1,6 @@
-//DAE Item Macro
+//DAE Item Macro, no arguments passed
+// only works with midi qol and speed roll ability checks
+
 
 const lastArg = args[args.length - 1];
 let tactor;
@@ -21,9 +23,17 @@ if (args[0] === "on") {
                     DAE.setFlag(tactor, 'enhanceAbility', {
                         name: "bear",
                     });
+                    let effect = tactor.effects.find(i => i.data.label === "Enhance Ability");
+                    let changes = effect.data.changes;
+                    changes[1] = {
+                        key: "flags.midi-qol.advantage.ability.save.con",
+                        mode: 0,
+                        priority: 20,
+                        value: `1`,
+                    }
+                    await effect.update({ changes });
                     ChatMessage.create({ content: `${tactor.name} gains ${amount} temp Hp` });
-                    tactor.update({ "data.attributes.hp.temp": amount });
-
+                    await tactor.update({ "data.attributes.hp.temp": amount });
                 }
             },
             two: {
@@ -33,16 +43,88 @@ if (args[0] === "on") {
                     DAE.setFlag(tactor, 'enhanceAbility', {
                         name: "bull",
                     });
-                    tactor.setFlag('dnd5e', 'powerfulBuild', true);
+                    let effect = tactor.effects.find(i => i.data.label === "Enhance Ability");
+                    let changes = effect.data.changes;
+                    changes[1] = {
+                        key: "flags.midi-qol.advantage.ability.check.str",
+                        mode: 0,
+                        priority: 20,
+                        value: `1`,
+                    }
+                    await effect.update({ changes });
+                    await tactor.setFlag('dnd5e', 'powerfulBuild', true);
                 }
             },
             three: {
-                label: "Other",
+                label: "Cat's Grace",
                 callback: () => {
+                    ChatMessage.create({ content: `${tactor.name} doesn't take damage from falling 20 feet or less if it isn't incapacitated.` });
                     DAE.setFlag(tactor, 'enhanceAbility', {
-                        name: "other",
+                        name: "cat",
                     });
-                    ChatMessage.create({ content: `A non automated Ability was enhanced for ${tactor.name}`});
+                    let effect = tactor.effects.find(i => i.data.label === "Enhance Ability");
+                    let changes = effect.data.changes;
+                    changes[1] = {
+                        key: "flags.midi-qol.advantage.ability.check.dex",
+                        mode: 0,
+                        priority: 20,
+                        value: `1`,
+                    }
+                    await effect.update({ changes });
+                }
+            },
+            four: {
+                label: "Eagle's Splendor",
+                callback: () => {
+                    ChatMessage.create({ content: `${tactor.name} has advantage on Charisma checks` });
+                    DAE.setFlag(tactor, 'enhanceAbility', {
+                        name: "eagle",
+                    });
+                    let effect = tactor.effects.find(i => i.data.label === "Enhance Ability");
+                    let changes = effect.data.changes;
+                    changes[1] = {
+                        key: "flags.midi-qol.advantage.ability.check.cha",
+                        mode: 0,
+                        priority: 20,
+                        value: `1`,
+                    }
+                    await effect.update({ changes });
+                }
+            },
+            five: {
+                label: "Fox's Cunning",
+                callback: () => {
+                    ChatMessage.create({ content: `${tactor.name} has advantage on Intelligence checks` });
+                    DAE.setFlag(tactor, 'enhanceAbility', {
+                        name: "fox",
+                    });
+                    let effect = tactor.effects.find(i => i.data.label === "Enhance Ability");
+                    let changes = effect.data.changes;
+                    changes[1] = {
+                        key: "flags.midi-qol.advantage.ability.check.int",
+                        mode: 0,
+                        priority: 20,
+                        value: `1`,
+                    }
+                    await effect.update({ changes });
+                }
+            },
+            five: {
+                label: "Owl's Wisdom",
+                callback: () => {
+                    ChatMessage.create({ content: `${tactor.name} has advantage on Wisdom checks` });
+                    DAE.setFlag(tactor, 'enhanceAbility', {
+                        name: "owl",
+                    });
+                    let effect = tactor.effects.find(i => i.data.label === "Enhance Ability");
+                    let changes = effect.data.changes;
+                    changes[1] = {
+                        key: "flags.midi-qol.advantage.ability.check.wis",
+                        mode: 0,
+                        priority: 20,
+                        value: `1`,
+                    }
+                    await effect.update({ changes });
                 }
             }
         }

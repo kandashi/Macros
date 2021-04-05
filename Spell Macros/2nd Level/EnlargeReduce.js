@@ -1,4 +1,4 @@
-//DAE Item Macro
+//DAE Item Macro, no arguments passed
 
 /**
  * For each target, the GM will have to choose 
@@ -20,11 +20,11 @@ if (args[0] === "on") {
             one: {
                 label: "Enlarge",
                 callback: () => {
-                    let bonus = mwak + "+ 1d4";
+                    let bonus = mwak + " + 1d4";
                     let enlarge = (originalSize + 1);
-                    tactor.update({ "data.bonuses.mwak.damage": bonus });
-                    target.update({ "width": enlarge, "height": enlarge });
-                    DAE.setFlag(tactor, 'enlageReduceSpell', {
+                    await tactor.update({ "data.bonuses.mwak.damage": bonus });
+                    await target.update({ "width": enlarge, "height": enlarge });
+                    await DAE.setFlag(tactor, 'enlageReduceSpell', {
                         size: originalSize,
                         ogMwak: mwak,
                     });
@@ -37,9 +37,9 @@ if (args[0] === "on") {
                     let bonus = mwak + " -1d4";
                     let size = originalSize;
                     let newSize = (size > 1) ? (size - 1) : (size - 0.3);
-                    tactor.update({ "data.bonuses.mwak.damage": bonus });
-                    target.update({ "width": newSize, "height": newSize });
-                    DAE.setFlag(tactor, 'enlageReduceSpell', {
+                    await tactor.update({ "data.bonuses.mwak.damage": bonus });
+                    await target.update({ "width": newSize, "height": newSize });
+                    await DAE.setFlag(tactor, 'enlageReduceSpell', {
                         size: originalSize,
                         ogMwak: mwak,
                     });
@@ -51,8 +51,8 @@ if (args[0] === "on") {
 }
 if (args[0] === "off") {
     let flag = DAE.getFlag(tactor, 'enlageReduceSpell');
-    tactor.update({ "data.bonuses.mwak.damage": flag.ogMwak });
-    target.update({ "width": flag.size, "height": flag.size });
-    DAE.unsetFlag(tactor, 'enlageReduceSpell');
+    await tactor.update({ "data.bonuses.mwak.damage": flag.ogMwak });
+    await target.update({ "width": flag.size, "height": flag.size });
+    await DAE.unsetFlag(tactor, 'enlageReduceSpell');
     ChatMessage.create({ content: `${target.name} is returned to normal size` });
 }

@@ -107,7 +107,7 @@ if (args[0] === "on") {
     ui.notifications.notify("Weapon created in your inventory")
 }
 
-// Delete Flame Blade
+// Delete Arcane Sword
 if (args[0] === "off") {
     let sword = tactor.items.find(i => i.data.flags?.DAESRD?.ArcaneSword === tactor.id)
   let template = canvas.templates.placeables.filter(i => i.data.flags.DAESRD.ArcaneSword?.ActorId === tactor.id)

@@ -1,4 +1,4 @@
-//DAE Item Macro Execute
+//DAE Item Macro Execute, no arguments passed
 
 const lastArg = args[args.length - 1];
 let tactor;

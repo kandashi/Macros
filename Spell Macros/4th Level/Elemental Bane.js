@@ -1,4 +1,4 @@
-//DAE Item Macro 
+//DAE  Macro, no arguments passed
 
 const lastArg = args[args.length - 1];
 let tactor;
@@ -45,14 +45,11 @@ if (args[0] === "on") {
     }).render(true);
 }
 if (args[0] === "off") {
-    async function Off() {
-        let element = await DAE.getFlag(tactor, 'ElementalBane');
-        let resistances = tactor.data.data.traits.dr.value;
-        if (element !== undefined) {
-            resistances.push(element);
-            tactor.update({ "data.traits.dr.value": resistances });
-        }
-        ChatMessage.create({ content: `${tname} has elemental bane for ${element} removed` });
+    let element = await DAE.getFlag(tactor, 'ElementalBane');
+    let resistances = tactor.data.data.traits.dr.value;
+    if (element !== undefined) {
+        resistances.push(element);
+        tactor.update({ "data.traits.dr.value": resistances });
     }
-    Off();
+    ChatMessage.create({ content: `${tname} has elemental bane for ${element} removed` });
 }

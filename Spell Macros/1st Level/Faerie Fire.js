@@ -1,3 +1,6 @@
+// DAE macro, just call the macro, nothing else
+// setup the spell as normal
+
 const lastArg = args[args.length - 1];
 let tactor;
 if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;

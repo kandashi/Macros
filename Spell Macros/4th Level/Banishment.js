@@ -1,4 +1,4 @@
-//DAE Macro Execute, Effect Value = "Macro Name" @target
+//DAE Macro, Effect Value = @target
 
 let target = canvas.tokens.get(args[1]); //find target
 

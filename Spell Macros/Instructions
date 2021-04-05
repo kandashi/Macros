@@ -1,0 +1,3 @@
+For any spell with a DAE effect, you can either embed within an Item Macro and call directly with the macro.ItemMacro option with just the arguments within the effect value
+
+If you wish to use the standard macro.Execute, simply add the macro name in quotation marks before any of the arguments, eg. "Call Lighting" @attributes.spelldc @item.level

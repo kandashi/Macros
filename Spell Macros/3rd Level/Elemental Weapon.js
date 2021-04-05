@@ -1,4 +1,4 @@
-//DAE Item Macro Execute
+//DAE Macro, effect value = @item.level
 
 const lastArg = args[args.length - 1];
 let tactor;
@@ -15,7 +15,11 @@ else if (DAEItem.data.level < 7) bonus = 2;
 else if (DAEItem.data.level < 4) bonus = 1;
 
 for (let weapon of weapons) {
-  weapon_content += `<option value=${weapon.id}>${weapon.name}</option>`;
+  weapon_content += `<label class="radio-label">
+  <input type="radio" name="weapon" value="${weapon.id}">
+  <img src="${weapon.img}" style="border:0px; width: 50px; height:50px;">
+  ${weapon.data.name}
+</label>`;
 }
 
 /**
@@ -25,27 +29,62 @@ if (args[0] === "on") {
   new Dialog({
     title: 'Example',
     content: `
-          <form class="flexcol">
-            <div class="form-group">
-              <select id="weapon">
-              ${weapon_content}
-              </select>
-              <select id="element">
-                <option value="acid">Acid</option>
-                <option value="cold">Cold</option>
-                <option value="fire">Fire</option>
-                <option value="lightning">Lightning</option>
-                <option value="thunder">Thunder</option>
-              </select>
-            </div>
-          </form>
-        `,
+    <style>
+    .magicWeapon .form-group {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        align-items: flex-start;
+      }
+      
+      .magicWeapon .radio-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        justify-items: center;
+        flex: 1 0 25%;
+        line-height: normal;
+      }
+      
+      .magicWeapon .radio-label input {
+        display: none;
+      }
+      
+      .magicWeapon img {
+        border: 0px;
+        width: 50px;
+        height: 50px;
+        flex: 0 0 50px;
+        cursor: pointer;
+      }
+          
+      /* CHECKED STYLES */
+      .magicWeapon [type=radio]:checked + img {
+        outline: 2px solid #f00;
+      }
+    </style>
+    <form class="magicWeapon">
+      <div class="form-group" id="weapons">
+       ${weapon_content}
+       </div>
+    </form>
+    <form>
+      <select id="element">
+        <option value="acid">Acid</option>
+        <option value="cold">Cold</option>
+        <option value="fire">Fire</option>
+        <option value="lightning">Lightning</option>
+        <option value="thunder">Thunder</option>
+      </select>
+    </form>
+  `,
     buttons: {
       yes: {
         icon: '<i class="fas fa-check"></i>',
         label: 'Yes',
         callback: (html) => {
-          let weaponId = html.find('#weapon').val();
+          let weaponId = $("input[type='radio'][name='weapon']:checked").val();
           let element = html.find('#element').val();
           let dmgDice = (bonus + "d4");
           let weapon = tactor.items.get(weaponId);

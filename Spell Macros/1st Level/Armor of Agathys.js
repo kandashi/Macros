@@ -1,4 +1,6 @@
-//DAE Item Macro, Effect Value = @item.level
+//DAE Macro Either Item Macro of Macro Execute
+// Effect Value = @item.level
+// self target, normal duration
 const lastArg = args[args.length - 1];
 let tactor;
 if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
@@ -25,9 +27,6 @@ if (args[0] === "on") {
             },
         },
         "flags": {
-            "midi-qol": {
-                "onUseMacroName": ""
-            },
             "DAE": {
                 "ArmorOfAgathys": {
                     "ActorId" : tactor.id

@@ -1,4 +1,4 @@
-//DAE Item Macro 
+//DAE Item Macro, no arguments passed
 
 let tactor;
 if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;

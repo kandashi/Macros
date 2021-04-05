@@ -1,4 +1,4 @@
-//DAE Item Macro 
+//DAE macro, no arguments to pass
 const lastArg = args[args.length - 1];
 let tactor;
 const target = canvas.tokens.get(lastArg.tokenId)

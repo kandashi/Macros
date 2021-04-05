@@ -1,4 +1,4 @@
-//DAE Macro Execute, Effect Value = "Macro Name" 
+//DAE Macro no arguments passed
 const lastArg = args[args.length - 1];
 let tactor;
 if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;

@@ -17,7 +17,7 @@ if (args[0] === "on") {
         buttons: {
             one: {
                 label: "Bear's Endurance",
-                callback: () => {
+                callback: async () => {
                     let formula = `2d6`;
                     let amount = new Roll(formula).roll().total;
                     DAE.setFlag(tactor, 'enhanceAbility', {
@@ -38,7 +38,7 @@ if (args[0] === "on") {
             },
             two: {
                 label: "Bull's Strength",
-                callback: () => {
+                callback: async () => {
                     ChatMessage.create({ content: `${tactor.name}'s encumberance is doubled` });
                     DAE.setFlag(tactor, 'enhanceAbility', {
                         name: "bull",
@@ -57,7 +57,7 @@ if (args[0] === "on") {
             },
             three: {
                 label: "Cat's Grace",
-                callback: () => {
+                callback: async () => {
                     ChatMessage.create({ content: `${tactor.name} doesn't take damage from falling 20 feet or less if it isn't incapacitated.` });
                     DAE.setFlag(tactor, 'enhanceAbility', {
                         name: "cat",
@@ -75,7 +75,7 @@ if (args[0] === "on") {
             },
             four: {
                 label: "Eagle's Splendor",
-                callback: () => {
+                callback: async () => {
                     ChatMessage.create({ content: `${tactor.name} has advantage on Charisma checks` });
                     DAE.setFlag(tactor, 'enhanceAbility', {
                         name: "eagle",
@@ -93,7 +93,7 @@ if (args[0] === "on") {
             },
             five: {
                 label: "Fox's Cunning",
-                callback: () => {
+                callback: async () => {
                     ChatMessage.create({ content: `${tactor.name} has advantage on Intelligence checks` });
                     DAE.setFlag(tactor, 'enhanceAbility', {
                         name: "fox",
@@ -111,7 +111,7 @@ if (args[0] === "on") {
             },
             five: {
                 label: "Owl's Wisdom",
-                callback: () => {
+                callback: async () => {
                     ChatMessage.create({ content: `${tactor.name} has advantage on Wisdom checks` });
                     DAE.setFlag(tactor, 'enhanceAbility', {
                         name: "owl",

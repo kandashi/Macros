@@ -79,7 +79,7 @@ async function StinkingCloud(token) {
     if (saveRoll < save) {
         ChatMessage.create({ content: `${token.name} spends its turn doing nothing` })
     } else {
-        ChatMessage.create({content: `${token.name} saves againts Stinking Cloud`})
+        ChatMessage.create({content: `${token.name} saves against Stinking Cloud`})
     }
 }
 

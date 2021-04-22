@@ -30,7 +30,6 @@ if (args[0] === "each") {
         if (tactor.id !== actor.id) return
         let hp = getProperty(update, "data.attributes.hp.value");
         if (hp === 0) {
-            debugger
             update.data.attributes.hp.value = 1;
             ChatMessage.create({ content: `Death Ward prevents ${actor.name} from dying` });
             let effect = actor.effects.find(i => i.data.label === "Death Ward");

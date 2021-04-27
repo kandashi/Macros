@@ -13,21 +13,21 @@ if (args[0] === "on") {
             buttons: {
                 one: {
                     label: "Warm",
-                    callback: () => {
-                        let resistances = tactor.data.data.traits.dr.value;
+                    callback: async () => {
+                        let resistances = duplicate(tactor.data.data.traits.dr.value);
                         resistances.push("cold");
-                        tactor.update({ "data.traits.dr.value": resistances });
-                        DAE.setFlag(tactor, 'FireShield', "cold");
+                        await tactor.update({ "data.traits.dr.value": resistances });
+                        await DAE.setFlag(tactor, 'FireShield', "cold");
                         ChatMessage.create({ content: `${target.name} gains resistnace to cold` });
                     }
                 },
                 two: {
                     label: "Cold",
-                    callback: () => {
-                        let resistances = tactor.data.data.traits.dr.value;
+                    callback: async () => {
+                        let resistances = duplicate(tactor.data.data.traits.dr.value);
                         resistances.push("fire");
-                        tactor.update({ "data.traits.dr.value": resistances });
-                        DAE.setFlag(tactor, 'FireShield', "fire");
+                        await tactor.update({ "data.traits.dr.value": resistances });
+                        await DAE.setFlag(tactor, 'FireShield', "fire");
                         ChatMessage.create({ content: `${target.name} gains resistnace to fire` });
                     }
                 },
@@ -39,8 +39,8 @@ if (args[0] === "off") {
     let resistances = tactor.data.data.traits.dr.value;
     const index = resistances.indexOf(element);
     resistances.splice(index, 1);
-    tactor.update({ "data.traits.dr.value": resistances });
+    await tactor.update({ "data.traits.dr.value": resistances });
     ChatMessage.create({ content: "Fire Shield expires on " + target.name});
-    DAE.unsetFlag(tactor, 'FireShield');
+    await DAE.unsetFlag(tactor, 'FireShield');
 
 }

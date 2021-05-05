@@ -87,11 +87,13 @@ if (args[0] === "on") {
                         weapon: itemId,
                         weaponDmg: wpDamage,
                         verDmg: verDamage,
+                        mgc : copy_item.data.properties.mgc
                     }
                     );
                     if(copy_item.data.attackBonus === "") copy_item.data.attackBonus = "0"
                     copy_item.data.attackBonus = `${parseInt(copy_item.data.attackBonus) + bonus}`;
                     copy_item.data.damage.parts[0][0] = (wpDamage + " + " + bonus);
+                    copy_item.data.properties.mgc = true
                     if (verDamage !== "" && verDamage !== null) copy_item.data.damage.versatile = (verDamage + " + " + bonus);
                     tactor.updateEmbeddedEntity("OwnedItem", copy_item);
                 }
@@ -106,11 +108,12 @@ if (args[0] === "on") {
 
 //Revert weapon and unset flag.
 if (args[0] === "off") {
-    let { damage, weapon, weaponDmg, verDmg } = DAE.getFlag(tactor, 'magicWeapon');
+    let { damage, weapon, weaponDmg, verDmg, mgc} = DAE.getFlag(tactor, 'magicWeapon');
     let weaponItem = tactor.items.get(weapon);
     let copy_item = duplicate(weaponItem);
     copy_item.data.attackBonus = damage;
     copy_item.data.damage.parts[0][0] = weaponDmg;
+    copy_item.data.properties.mgc = mgc
     if (verDmg !== "" && verDmg !== null) copy_item.data.damage.versatile = verDmg;
     tactor.updateEmbeddedEntity("OwnedItem", copy_item);
     DAE.unsetFlag(tactor, `magicWeapon`);

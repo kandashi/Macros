@@ -80,7 +80,7 @@ if (args[0] === "on") {
           "value": 5,
           "units": "ft"
         },
-        "ability": "",
+        "ability": args[2],
         "actionType": "msak",
         "attackBonus": "0",
         "chatFlavor": "",

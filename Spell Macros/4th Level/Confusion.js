@@ -10,7 +10,7 @@ const saveData = DAEItem.data.save
 
 if (args[0] === "each") {
 
-        let confusionRoll = new Roll("1d10").roll().total;
+        let confusionRoll = await new Roll("1d10").evaluate().total;
         let content;
         switch (confusionRoll) {
             case 1:
@@ -32,12 +32,12 @@ if (args[0] === "each") {
                 content = "The creature can act and move normally.";
                 break;
         }
-        ChatMessage.create({ content: `Confusion roll for ${tactor.name} is ${confusionRoll}: ` + content });
+        ChatMessage.create({ content: `Confusion roll for ${tactor.name} is ${confusionRoll}:<br> ` + content });
 
-        const flavor = `${CONFIG.DND5E.abilities[saveData.ability]} DC${saveData.dc} ${DAEItem?.name || ""}`;
+        const flavor = `${CONFIG.DND5E.abilities[saveData.ability]} DC${args[1]} End of turn save for Confusion`;
         let saveRoll = (await tactor.rollAbilitySave(saveData.ability, { flavor })).total;
 
-    if(saveRoll >= DC) {
+    if(saveRoll >= args[1]) {
         ChatMessage.create({ content: `Confusion ends for ${tactor.name} at the end of their turn`})
         tactor.deleteEmbeddedEntity("ActiveEffect", lastArg.effectId); 
     }

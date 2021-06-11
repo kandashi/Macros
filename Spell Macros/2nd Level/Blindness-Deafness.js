@@ -1,3 +1,6 @@
+if(!game.modules.get("advanced-macros")?.active) {ui.notifications.error("Please enable the Advanced Macros module") ;return;}
+if(!game.modules.get("combat-utility-belt")?.active) {ui.notifications.error("Please enable the CUB module"); return;}
+
 //DAE macro, call directly with no arguments
 const lastArg = args[args.length - 1];
 let tactor;

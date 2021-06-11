@@ -14,11 +14,11 @@ if (args[0] === "on" || args[0] === "each") {
     let saves = new Set();
     targets.add(target);
     saves.add(target);
-    if (saveRoll < args[1]) {
-        MidiQOL.applyTokenDamage([{ damage: damageRoll.total, type: "radiant" }], damageRoll.total, targets, null, saves);
-    }
-    else if(saveRoll >= args[1]){
+    if (saveRoll > args[1]) {
+        saves.add(target)
         MidiQOL.applyTokenDamage([{ damage: damageRoll.total/2, type: "radiant" }], damageRoll.total, targets, null, saves);
-
+    }
+    else{
+        MidiQOL.applyTokenDamage([{ damage: damageRoll.total, type: "radiant" }], damageRoll.total, targets, null, saves);
     }
 }

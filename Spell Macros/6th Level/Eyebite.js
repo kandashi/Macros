@@ -1,11 +1,14 @@
-
+// DAE macro, args : @attributes.spelldc
+if(!game.modules.get("advanced-macros")?.active) {ui.notifications.error("Please enable the Advanced Macros module") ;return;}
+if(!game.modules.get("combat-utility-belt")?.active) {ui.notifications.error("Please enable the CUB module"); return;}
 
 const lastArg = args[args.length - 1];
+const DC = args[1]
 let tactor;
 if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
 else tactor = game.actors.get(lastArg.actorId);
 const DAEItem = lastArg.efData.flags.dae.itemData
-const saveData = DAEItem.data.save
+let target = canvas.tokens.get(lastArg.tokenId)
 
 let folder = await game.packs.get("Dynamic-Effects-SRD.DAE SRD Macros").getContent()
 let CUBControl = folder.find(i => i.data.name === "CUB Condition")
@@ -22,15 +25,15 @@ function EyebiteDialog() {
             one: {
                 label: "Asleep",
                 callback: async () => {
-                    for (let target of game.user.targets) {
-                        const flavor = `${CONFIG.DND5E.abilities[saveData.ability]} DC${saveData.dc} ${DAEItem?.name || ""}`;
-                        let saveRoll = (await tactor.rollAbilitySave(saveData.ability, { flavor })).total;
-                        if (saveRoll < saveData.ability) {
-                            ChatMessage.create({ content: `${target.name} failed the save with a ${saveRoll}` });
-                            CUBControl.execute("apply", "Unconscious", target);
+                    for (let t of game.user.targets) {
+                        const flavor = `${CONFIG.DND5E.abilities["wis"]} DC${DC} ${DAEItem?.name || ""}`;
+                        let saveRoll = (await tactor.rollAbilitySave("wis", { flavor })).total;
+                        if (saveRoll < DC) {
+                            ChatMessage.create({ content: `${t.name} failed the save with a ${saveRoll}` });
+                            CUBControl.execute("apply", "Unconscious", t);
                         }
                         else {
-                            ChatMessage.create({ content: `${target.name} passed the save with a ${saveRoll}` });
+                            ChatMessage.create({ content: `${t.name} passed the save with a ${saveRoll}` });
                         }
                     }
                 }
@@ -38,15 +41,15 @@ function EyebiteDialog() {
             two: {
                 label: "Panicked",
                 callback: async () => {
-                    for (let target of game.user.targets) {
-                        const flavor = `${CONFIG.DND5E.abilities[saveData.ability]} DC${saveData.dc} ${DAEItem?.name || ""}`;
-                        let saveRoll = (await tactor.rollAbilitySave(saveData.ability, { flavor })).total;
-                        if (saveRoll < saveData.ability) {
-                            ChatMessage.create({ content: `${target.name} failed the save with a ${saveRoll}` });
-                            CUBControl.execute("apply", "Frightened", target);
+                    for (let t of game.user.targets) {
+                        const flavor = `${CONFIG.DND5E.abilities["wis"]} DC${DC} ${DAEItem?.name || ""}`;
+                        let saveRoll = (await tactor.rollAbilitySave("wis", { flavor })).total;
+                        if (saveRoll < DC) {
+                            ChatMessage.create({ content: `${t.name} failed the save with a ${saveRoll}` });
+                            CUBControl.execute("apply", "Frightened", t);
                         }
                         else {
-                            ChatMessage.create({ content: `${target.name} passed the save with a ${saveRoll}` });
+                            ChatMessage.create({ content: `${t.name} passed the save with a ${saveRoll}` });
                         }
                     }
                 }
@@ -54,15 +57,15 @@ function EyebiteDialog() {
             three: {
                 label: "Sickened",
                 callback: async () => {
-                    for (let target of game.user.targets) {
-                        const flavor = `${CONFIG.DND5E.abilities[saveData.ability]} DC${saveData.dc} ${DAEItem?.name || ""}`;
-                        let saveRoll = (await tactor.rollAbilitySave(saveData.ability, { flavor })).total;
-                        if (saveRoll < saveData.ability) {
-                            ChatMessage.create({ content: `${target.name} failed the save with a ${saveRoll}` });
-                            CUBControl.execute("apply", "Poisoned", target);
+                    for (let t of game.user.targets) {
+                        const flavor = `${CONFIG.DND5E.abilities["wis"]} DC${DC} ${DAEItem?.name || ""}`;
+                        let saveRoll = (await tactor.rollAbilitySave("wis", { flavor })).total;
+                        if (saveRoll < DC) {
+                            ChatMessage.create({ content: `${t.name} failed the save with a ${saveRoll}` });
+                            CUBControl.execute("apply", "Poisoned", t);
                         }
                         else {
-                            ChatMessage.create({ content: `${target.name} passed the save with a ${saveRoll}` });
+                            ChatMessage.create({ content: `${t.name} passed the save with a ${saveRoll}` });
                         }
                     }
                 }

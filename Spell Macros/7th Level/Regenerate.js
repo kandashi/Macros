@@ -11,13 +11,12 @@ if (args[0] === "on") {
 
     // If 6s elapses, update HP by one
     const timeHookId = Hooks.on("updateWorldTime", (currentTime, updateInterval) => {
-        if (game.combats === []) return;
         let effect = tactor.effects.find(i => i.data.label === "Regenerate");
         let applyTime = effect.data.duration.startTime;
         let expireTime = applyTime + effect.data.duration.seconds;
         let healing = roundCount(currentTime, updateInterval, applyTime, expireTime);
-        console.log(`${tactor.name} healed for ${healing}`);
         tactor.applyDamage(-healing);
+        ChatMessage.create({ content: `${tactor.name} gains 1 hp` });
     }
     );
 
@@ -25,11 +24,6 @@ if (args[0] === "on") {
         timeHook: timeHookId
     }
     );
-}
-
-if (args[0] === "each") {
-    tactor.applyDamage(-1);
-    ChatMessage.create({ content: `${tactor.name} gains 1 hp` });
 }
 
 if (args[0] === "off") {

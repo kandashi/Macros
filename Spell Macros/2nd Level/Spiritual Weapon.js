@@ -1,5 +1,7 @@
 //DAE Item Macro Execute, value = @item.level
 // Set spell to self cast, no damage/attack roll
+if (!game.modules.get("advanced-macros")?.active) {ui.notifications.error("Please enable the Advanced Macros module") ;return;}
+
 const lastArg = args[args.length - 1];
 let tactor;
 if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
@@ -16,7 +18,7 @@ if (args[0] === "on") {
   let damage = Math.floor(Math.floor(args[1] / 2));
   let image = castingItem.img;
 
-  let range = MeasuredTemplate.create({
+  let range = canvas.scene.createEmbeddedDocuments("MeasuredTemplate", [{
     t: "circle",
     user: game.user._id,
     x: target.x + canvas.grid.size / 2,
@@ -32,7 +34,7 @@ if (args[0] === "on") {
       }
     }
     //fillColor: "#FF3366",
-  });
+  }]);
   range.then(result => {
     let templateData = {
       t: "rect",
@@ -52,13 +54,14 @@ if (args[0] === "on") {
     }
     Hooks.once("createMeasuredTemplate", deleteTemplates);
 
-    let template = new game.dnd5e.canvas.AbilityTemplate(templateData)
+    let doc = new CONFIG.MeasuredTemplate.documentClass(templateData, { parent: canvas.scene })
+    let template = new game.dnd5e.canvas.AbilityTemplate(doc)
     template.actorSheet = tactor.sheet;
     template.drawPreview()
 
-    async function deleteTemplates(scene, template) {
+    async function deleteTemplates() {
       let removeTemplates = canvas.templates.placeables.filter(i => i.data.flags.DAESRD?.SpiritualWeaponRange?.ActorId === tactor.id);
-      await canvas.templates.deleteMany([removeTemplates[0].id]);
+      await canvas.scene.deleteEmbeddedDocuments("MeasuredTemplate", [removeTemplates[0].id]);
     };
   })
   await tactor.createOwnedItem(
@@ -103,6 +106,7 @@ if (args[0] === "on") {
         }
       },
       "img": `${image}`,
+      "effects" : []
     },
   );
   ui.notifications.notify("Weapon created in your inventory")
@@ -112,7 +116,7 @@ if (args[0] === "on") {
 // Delete Spitirual Weapon and template
 if (args[0] === "off") {
   let removeItem = tactor.items.find(i => i.data.flags?.DAESRD?.SpiritualWeapon === tactor.id)
-  let template = canvas.templates.placeables.filter(i => i.data.flags.DAESRD.SpiritualWeapon?.ActorId === tactor.id)
+  let template = canvas.templates.placeables.find(i => i.data.flags.DAESRD.SpiritualWeapon?.ActorId === tactor.id)
   if(removeItem) await tactor.deleteOwnedItem(removeItem.id);
-  if(template) await canvas.templates.deleteMany(template[0].id)
+  if(template) await canvas.scene.deleteEmbeddedDocuments("MeasuredTemplate", [template.id])
 }

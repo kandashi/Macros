@@ -1,4 +1,6 @@
 //DAE Macro no arguments passed
+if (!game.modules.get("advanced-macros")?.active) {ui.notifications.error("Please enable the Advanced Macros module") ;return;}
+
 const lastArg = args[args.length - 1];
 let tactor;
 if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
@@ -26,9 +28,11 @@ if (args[0] === "on") {
         },
         fillColor: game.user.color
     }
-    let template = new game.dnd5e.canvas.AbilityTemplate(templateData)
+    let doc = new CONFIG.MeasuredTemplate.documentClass(templateData, { parent: canvas.scene })
+    let template = new game.dnd5e.canvas.AbilityTemplate(doc)
     template.actorSheet = tactor.sheet;
     template.drawPreview()
+
     await tactor.createOwnedItem(
         {
             "name": "Call Lightning - bolt",
@@ -74,7 +78,8 @@ if (args[0] === "on") {
                 "formula": ""
               }
             },
-            "img": "systems/dnd5e/icons/spells/lighting-sky-2.jpg"
+            "img": "systems/dnd5e/icons/spells/lighting-sky-2.jpg",
+            "effects" : []
           }
     );
 }
@@ -83,7 +88,7 @@ if (args[0] === "on") {
 if (args[0] === "off") {
     let castItem = tactor.data.items.find(i => i.name === "Call Lightning - bolt" && i.type === "spell")
     if(castItem) await tactor.deleteOwnedItem(castItem._id)
-    let template = canvas.templates.placeables.filter(i => i.data.flags.DAESRD?.CallLighting?.ActorId === tactor.id)
-    if(template) await canvas.templates.deleteMany(template[0].id)
+    let template = canvas.templates.placeables.find(i => i.data.flags.DAESRD?.CallLighting?.ActorId === tactor.id)
+    if (template) await canvas.scene.deleteEmbeddedDocuments("MeasuredTemplate", [template.id])
 
 }

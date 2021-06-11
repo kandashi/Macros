@@ -1,3 +1,5 @@
+if (!game.modules.get("advanced-macros")?.active) {ui.notifications.error("Please enable the Advanced Macros module") ;return;}
+
 //DAE macro, Effect arguments = @target 
 const lastArg = args[args.length - 1];
 let tactor;
@@ -25,28 +27,30 @@ if (args[0] === "on") {
         }
     };
 
-    Hooks.once("createMeasuredTemplate", async (scene, template) => {
-        let radius = canvas.grid.size * (template.distance / canvas.grid.grid.options.dimensions.distance)
-        circleWall(template.x, template.y, radius)
+    Hooks.once("createMeasuredTemplate", async (template) => {
+        let radius = canvas.grid.size * (template.data.distance / canvas.grid.grid.options.dimensions.distance)
+        circleWall(template.data.x, template.data.y, radius)
         await canvas.templates.deleteMany(template._id);
     });
 
-    let template = new game.dnd5e.canvas.AbilityTemplate(templateData);
+    let doc = new CONFIG.MeasuredTemplate.documentClass(templateData, { parent: canvas.scene })
+    let template = new game.dnd5e.canvas.AbilityTemplate(doc);
     template.actorSheet = tactor.sheet;
     template.drawPreview();
 
     async function circleWall(cx, cy, radius) {
+        let data = [];
         const step = 30;
         for (let i = step; i <= 360; i += step) {
-            let theta0 = toRadians(i - step);
-            let theta1 = toRadians(i);
+            let theta0 = Math.toRadians(i - step);
+            let theta1 = Math.toRadians(i);
 
             let lastX = Math.floor(radius * Math.cos(theta0) + cx);
             let lastY = Math.floor(radius * Math.sin(theta0) + cy);
             let newX = Math.floor(radius * Math.cos(theta1) + cx);
             let newY = Math.floor(radius * Math.sin(theta1) + cy);
 
-            await Wall.create({
+            data.push({
                 c: [lastX, lastY, newX, newY],
                 move: CONST.WALL_MOVEMENT_TYPES.NONE,
                 sense: CONST.WALL_SENSE_TYPES.NORMAL,
@@ -62,7 +66,7 @@ if (args[0] === "on") {
                 }
             });
         }
-
+        canvas.scene.createEmbeddedDocuments("Wall", data)
     }
 
 }
@@ -73,7 +77,7 @@ if (args[0] === "off") {
         let wallArray = darkWalls.map(function (w) {
             return w.data._id
         })
-        await canvas.walls.deleteMany(wallArray)
+        await canvas.walls.deleteEmbeddedDocuments(wallArray)
     }
     removeWalls()
 }

@@ -12,15 +12,10 @@ if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
 else tactor = game.actors.get(lastArg.actorId);
 const target = canvas.tokens.get(lastArg.tokenId)
 
-async function DivineWordApply(target, targetHp, linked) {
+async function DivineWordApply(target, targetHp) {
 
     if (targetHp <= 20) {
-        if (linked = true) {
-            await target.actor.update({ "data.attributes.hp.value": 0 });
-        } else if (linked = false) {
-            target.update({ "actorData.data.attributes.hp.value": 0 })
-        }
-
+        await target.actor.update({ "data.attributes.hp.value": 0 });
     } else if (targetHp <= 30) {
         await game.cub.addCondition(["Blinded", "Deafened", "Stunned"], target)
         game.Gametime.doIn({ hours: 1 }, async () => {
@@ -39,14 +34,6 @@ async function DivineWordApply(target, targetHp, linked) {
     }
 }
 if (args[0] === "on") {
-    let targetHp, linked;
-    if (target.data.actorLink == true) {
-        targetHp = target.actor.data.data.attributes.hp.value
-        linked = true
-    } else {
-        targetHp = getProperty(target, "actorData.data.attributes.hp") || getProperty(target.actor, "data.data.attributes.hp.value")
-        linked = false
-    }
-    DivineWordApply(target, targetHp, linked)
+    DivineWordApply(target, target.actor.data.data.attributes.hp.value)
 }
 

@@ -1,4 +1,6 @@
 //DAE Item Macro Execute, arguments = @item.level
+if (!game.modules.get("advanced-macros")?.active) {ui.notifications.error("Please enable the Advanced Macros module") ;return;}
+
 const lastArg = args[args.length - 1];
 let tactor;
 if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
@@ -95,7 +97,7 @@ if (args[0] === "on") {
                     copy_item.data.damage.parts[0][0] = (wpDamage + " + " + bonus);
                     copy_item.data.properties.mgc = true
                     if (verDamage !== "" && verDamage !== null) copy_item.data.damage.versatile = (verDamage + " + " + bonus);
-                    tactor.updateEmbeddedEntity("OwnedItem", copy_item);
+                    tactor.updateEmbeddedDocuments("Item", [copy_item]);
                 }
             },
             Cancel:
@@ -115,6 +117,6 @@ if (args[0] === "off") {
     copy_item.data.damage.parts[0][0] = weaponDmg;
     copy_item.data.properties.mgc = mgc
     if (verDmg !== "" && verDmg !== null) copy_item.data.damage.versatile = verDmg;
-    tactor.updateEmbeddedEntity("OwnedItem", copy_item);
+    tactor.updateEmbeddedDocuments("Item", [copy_item]);
     DAE.unsetFlag(tactor, `magicWeapon`);
 }

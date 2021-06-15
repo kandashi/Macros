@@ -1,5 +1,6 @@
 // DAE macro, just call the macro, nothing else
 // setup the spell as normal
+if (!game.modules.get("advanced-macros")?.active) {ui.notifications.error("Please enable the Advanced Macros module") ;return;}
 
 const lastArg = args[args.length - 1];
 let tactor;
@@ -25,7 +26,7 @@ if (args[0] === "on") {
                         alpha: target.data.lightAlpha,
                         dimLight: dimLight
                     });
-                    target.update({ "lightColor": "#5ab9e2", "lightAlpha": 0.64, "dimLight": "10" })
+                    target.update({ "lightColor": "#5ab9e2", "lightAlpha": 0.64, "dimLight": "10", "lightAnimation.intensity" : 3 })
                 }
             },
             two: {
@@ -38,7 +39,7 @@ if (args[0] === "on") {
                         alpha: target.data.lightAlpha,
                         dimLight: dimLight
                     });
-                    target.update({ "lightColor": "#55d553", "lightAlpha": 0.64, "dimLight": "10" })
+                    target.update({ "lightColor": "#55d553", "lightAlpha": 0.64, "dimLight": "10","lightAnimation.intensity" : 3  })
                 }
             },
             three: {
@@ -51,7 +52,7 @@ if (args[0] === "on") {
                         alpha: target.data.lightAlpha,
                         dimLight: dimLight
                     });
-                    target.update({ "lightColor": "#844ec6", "lightAlpha": 0.64, "dimLight": "10" })
+                    target.update({ "lightColor": "#844ec6", "lightAlpha": 0.64, "dimLight": "10","lightAnimation.intensity" : 3  })
                 }
             }
         }

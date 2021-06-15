@@ -5,7 +5,7 @@ if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
 else tactor = game.actors.get(lastArg.actorId);
 
 const DAEItem = lastArg.efData.flags.dae.itemData
-const saveData = DAEItem.data.save
+const dc = args[1]
 
 
 if (args[0] === "on") {
@@ -37,10 +37,10 @@ if (args[0] === "each") {
 async function Contagion() {
     let flag = DAE.getFlag(tactor, "ContagionSpell", );
 
-    const flavor = `${CONFIG.DND5E.abilities[saveData.ability]} DC${saveData.dc} ${DAEItem?.name || ""}`;
-    let saveRoll = (await tactor.rollAbilitySave(saveData.ability, { flavor })).total;
+    const flavor = `${CONFIG.DND5E.abilities["con"]} DC${dc} ${DAEItem?.name || ""}`;
+    let saveRoll = (await tactor.rollAbilitySave("con", { flavor })).total;
 
-    if (saveRoll < saveData.dc) {
+    if (saveRoll < dc) {
         if (flag.count === 2) {
             ChatMessage.create({ content: `Contagion on ${tactor.name} is complete` });
             ContagionMessage();
@@ -54,7 +54,7 @@ async function Contagion() {
             console.log(`Contagion increased to ${contagionCount}`);
         }
     }
-    else if (saveRoll >= saveData.dc) {
+    else if (saveRoll >=dc) {
         tactor.deleteEmbeddedEntity("ActiveEffect", lastArg.effectId); 
     }
 }
@@ -89,7 +89,7 @@ async function ContagionMessage() {
                         label: "Blinding Sickness",
                         _id:  lastArg.effectId
                     }
-                    tactor.updateEmbeddedEntity("ActiveEffect", data);
+                    tactor.updateEmbeddedDocuments("ActiveEffect", [data]);
                 },
             },
             two: {
@@ -125,7 +125,7 @@ async function ContagionMessage() {
                         label: "Filth Fever",
                         _id: lastArg.effectId,
                     }
-                    tactor.updateEmbeddedEntity("ActiveEffect", data);
+                    tactor.updateEmbeddedDocuments("ActiveEffect", [data]);
                 }
             },
             three: {
@@ -150,7 +150,7 @@ async function ContagionMessage() {
                         label : "Flesh Rot",
                         _id: lastArg.effectId,
                     }
-                    tactor.updateEmbeddedEntity("ActiveEffect", data);
+                    tactor.updateEmbeddedDocuments("ActiveEffect", [data]);
                 },
             },
             four: {
@@ -175,7 +175,7 @@ async function ContagionMessage() {
                         label : "Mindfire",
                         _id: lastArg.effectId,
                     }
-                    tactor.updateEmbeddedEntity("ActiveEffect", data);
+                    tactor.updateEmbeddedDocuments("ActiveEffect", [data]);
                 }
             },
             five: {
@@ -212,7 +212,7 @@ async function ContagionMessage() {
                         label : "Seizure",
                         _id: lastArg.effectId,
                     }
-                    tactor.updateEmbeddedEntity("ActiveEffect", data);
+                    tactor.updateEmbeddedDocuments("ActiveEffect", [data]);
                 }
             },
             six: {
@@ -237,7 +237,7 @@ async function ContagionMessage() {
                         label : "Slimy Doom",
                         _id: lastArg.effecId,
                     }
-                    tactor.updateEmbeddedEntity("ActiveEffect", data);
+                    tactor.updateEmbeddedDocuments("ActiveEffect", [data]);
                 }
             },
         }

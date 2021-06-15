@@ -1,4 +1,6 @@
 //DAE Item Macro 
+if (!game.modules.get("advanced-macros")?.active) {ui.notifications.error("Please enable the Advanced Macros module") ;return;}
+
 const lastArg = args[args.length - 1];
 let tactor;
 if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
@@ -10,7 +12,7 @@ let DAEitem = tactor.items.find(i => i.name === `Unarmed Strike`); // find unarm
 if (args[0] === "on") {
     new Dialog({
         title: "Are you using Natural Weapons",
-        content: "<p>Yes or no</p>",
+        content: "",
         buttons: {
             one: {
                 label: "Yes",
@@ -22,7 +24,7 @@ if (args[0] === "on") {
                     let copy_item = duplicate(DAEitem);
                     DAE.setFlag(tactor, 'AlterSelfSpell', copy_item.data.damage.parts[0][0]); //set flag of previous value
                     copy_item.data.damage.parts[0][0] = "1d6 +@mod"; //replace with new value
-                    tactor.updateEmbeddedEntity("OwnedItem", copy_item); //update item
+                    tactor.updateEmbeddedDocuments("Item", [copy_item]); //update item
                     ChatMessage.create({ content: "Unarmed strike is altered" });
                 }
             },
@@ -35,9 +37,10 @@ if (args[0] === "on") {
 }
 if (args[0] === "off") {
     let damage = DAE.getFlag(tactor, 'AlterSelfSpell'); // find flag with previous values
-    let copy_item = duplicate(item);
+    if(!DAEitem)return;
+    let copy_item = duplicate(DAEitem);
     copy_item.data.damage.parts[0][0] = damage; //replace with old value
-    tactor.updateEmbeddedEntity("OwnedItem", copy_item); //update item
+    tactor.updateEmbeddedDocuments("Item", [copy_item]); //update item
     DAE.unsetFlag(tactor, 'world', 'AlterSelfSpell',); //remove flag
     ChatMessage.create({ content: `Alter Self expired, unarmed strike returned` });
 }

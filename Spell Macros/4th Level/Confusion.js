@@ -1,4 +1,4 @@
-//DAE Macro , Effect Value = @target @attributes.spelldc
+//DAE Macro , Effect Value = @attributes.spelldc
 
 const lastArg = args[args.length - 1];
 let tactor;

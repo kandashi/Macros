@@ -6,10 +6,10 @@ const target = canvas.tokens.get(lastArg.tokenId)
 
 
 if (args[0] === "on") {
-    ChatMessage.create({ content: `${target.name} turns invisible` });
+    ChatMessage.create({ content: `${target.name} turns invisible`, whisper: [game.user] });
     target.update({ "hidden": true });
 }
 if (args[0] === "off") {
-    ChatMessage.create({ content: `${target.name} re-appears` });
+    ChatMessage.create({ content: `${target.name} re-appears`, whisper: [game.user] });
     target.update({ "hidden": false });
 }

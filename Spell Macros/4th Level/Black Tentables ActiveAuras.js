@@ -1,6 +1,6 @@
-if (!game.modules.get("advanced-macros")?.active) ui.notifications.error("Advanced Macros is not enabled")
-if (!game.modules.get("combat-utility-belt")?.active) ui.notifications.error("CUB is not enabled")
-if (!game.modules.get("times-up")?.active) ui.notifications.error(" Times up is not enabled")
+if (!game.modules.get("advanced-macros")?.active) { ui.notifications.error("Advanced Macros is not enabled"); return }
+if (!game.modules.get("combat-utility-belt")?.active) { ui.notifications.error("CUB is not enabled"); return }
+if (!game.modules.get("times-up")?.active) { ui.notifications.error(" Times up is not enabled"); return }
 if (args[0] === "on" || args[0] === "each") {
     const lastArg = args[args.length - 1];
     let tactor;
@@ -16,18 +16,18 @@ if (args[0] === "on" || args[0] === "each") {
     else if (res) {
         var saveRoll = 0
     }
-    let damageRoll = new Roll(`3d6`).roll()
-    game.dice3d?.showForRoll(damageRoll)
+    let damageRoll = new Roll(`3d6[bludgeoning]`).evaluate()
+    damageRoll.toMessage({ flavor: "Black Tentacles Damage"})
     let targets = new Set();
     let saves = new Set();
     targets.add(target);
     saves.add(target);
     if (saveRoll > args[1]) {
         saves.add(target)
-        MidiQOL.applyTokenDamage([{ damage: damageRoll.total/2, type: "bludgeoning" }], damageRoll.total, targets, null, saves);
-        if(!res)game.cub.addCondition("Restrained", target)
+        MidiQOL.applyTokenDamage([{ damage: damageRoll.total / 2, type: "bludgeoning" }], damageRoll.total, targets, null, saves);
+        if (!res) game.cub.addCondition("Restrained", target)
     }
-    else{
+    else {
         MidiQOL.applyTokenDamage([{ damage: damageRoll.total, type: "bludgeoning" }], damageRoll.total, targets, null, saves);
     }
 }

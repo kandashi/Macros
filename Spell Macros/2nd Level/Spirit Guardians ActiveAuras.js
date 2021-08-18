@@ -8,8 +8,11 @@ if (args[0] === "each" || args[0] === "on") {
     if (target.id !== game.combats.active.current.tokenId) return;
     const flavor = `${CONFIG.DND5E.abilities["con"]} DC ${DC} Spirit Guardians}`;
     let saveRoll = (await tactor.rollAbilitySave("wis", { flavor, fastforward: true })).total;
-    let damageRoll = new Roll(`${damageDice}d8`).roll();
-
+    let damageRoll = new Roll(`${damageDice}d8`).evaluate()
+    damageRoll.toMessage({flavor: "Spirit Guardians Damage"});
+    let targets = new Set()
+    targets.add(target)
+    let saves = new Set;
     if (saveRoll > args[1]) {
         saves.add(target)
         MidiQOL.applyTokenDamage([{ damage: damageRoll.total / 2, type: "radiant" }], damageRoll.total, targets, null, saves);

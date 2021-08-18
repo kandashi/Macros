@@ -1,5 +1,5 @@
-if (!game.modules.get("advanced-macros")?.active) ui.notifications.error("Advanced Macros is not enabled")
-if (!game.modules.get("combat-utility-belt")?.active) ui.notifications.error("CUB is not enabled")
+if (!game.modules.get("advanced-macros")?.active) { ui.notifications.error("Advanced Macros is not enabled"); return }
+if (!game.modules.get("combat-utility-belt")?.active) { ui.notifications.error("CUB is not enabled"); return }
 
 if (args[0] === "on") {
 

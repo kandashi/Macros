@@ -1,4 +1,4 @@
-
+if (!game.modules.get("advanced-macros")?.active) { ui.notifications.error("Advanced Macros is not enabled"); return }
 
 if (args[0] === "on" || args[0] === "each") {
     const lastArg = args[args.length - 1];
@@ -8,17 +8,17 @@ if (args[0] === "on" || args[0] === "each") {
     const target = canvas.tokens.get(lastArg.tokenId)
     const flavor = `${CONFIG.DND5E.abilities["dex"]} DC${args[1]} "Moonbeam"}`;
     let saveRoll = (await tactor.rollAbilitySave("dex", { flavor })).total;
-    let damageRoll =  new Roll(`${args[2]}d10`).roll()
-    game.dice3d?.showForRoll(damageRoll)
+    let damageRoll = new Roll(`${args[2]}d10[radiant]`).roll()
+    damageRoll.toMessage({ flavor: "Moonbeam Damage" })
     let targets = new Set();
     let saves = new Set();
     targets.add(target);
     saves.add(target);
     if (saveRoll > args[1]) {
         saves.add(target)
-        MidiQOL.applyTokenDamage([{ damage: damageRoll.total/2, type: "radiant" }], damageRoll.total, targets, null, saves);
+        MidiQOL.applyTokenDamage([{ damage: damageRoll.total / 2, type: "radiant" }], damageRoll.total, targets, null, saves);
     }
-    else{
+    else {
         MidiQOL.applyTokenDamage([{ damage: damageRoll.total, type: "radiant" }], damageRoll.total, targets, null, saves);
     }
 }

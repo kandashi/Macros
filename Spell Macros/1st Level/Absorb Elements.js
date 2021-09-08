@@ -33,7 +33,7 @@ if (args[0] === "on") {
                 callback: async (html) => {
                     let element = html.find('#element').val();
                     let effect =  tactor.effects.find(i => i.data.label === "Absorb Elements");
-                    let changes = effect.data.changes;
+                    let changes = duplicate(effect.data.changes);
                     changes[0].value = element;
                     changes[1].value = `${args[1]}d6[${element}]`
                     await effect.update({changes});

@@ -66,5 +66,5 @@ if (args[0] === "apply") {
         }
     }
 
-    smiteTarget.actor.createEmbeddedEntity("ActiveEffect", effectData);
+    await smiteTarget.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
 }

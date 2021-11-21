@@ -83,17 +83,18 @@ if (args[0] === "on") {
       yes: {
         icon: '<i class="fas fa-check"></i>',
         label: 'Yes',
-        callback: (html) => {
+        callback: async (html) => {
           let weaponId = $("input[type='radio'][name='weapon']:checked").val();
           let element = html.find('#element').val();
           let dmgDice = (bonus + "d4");
           let weapon = tactor.items.get(weaponId);
           let copyWeapon = duplicate(weapon);
-          copyWeapon.data.attackBonus = (copyWeapon.attackBonus + bonus);
+          copyWeapon.data.attackBonus = (copyWeapon.data.attackBonus + bonus);
           let damageDice = copyWeapon.data.damage.parts
           damageDice.push([dmgDice, element])
-          tactor.updateEmbeddedEntity("OwnedItem", copyWeapon)
-          DAE.setFlag(tactor, 'elementalWeapon', {
+          console.log(copyWeapon)
+          await tactor.updateEmbeddedDocuments("Item", [copyWeapon])
+          await DAE.setFlag(tactor, 'elementalWeapon', {
             diceNum: dmgDice,
             attack: bonus,
             elementType: element,
@@ -115,10 +116,9 @@ if (args[0] === "off") {
   for (let i = 0; i < weaponDamageParts.length; i++) {
     if (weaponDamageParts[i][0] === diceNum && weaponDamageParts[i][1] === elementType){
       weaponDamageParts.splice(i, 1)
-      tactor.updateEmbeddedEntity("OwnedItem", copy_item);
-      DAE.unsetFlag(tactor, `elementalWeapon`);
+      await tactor.updateEmbeddedDocuments("Item", [copy_item]);
+      await DAE.unsetFlag(tactor, `elementalWeapon`);
       return;
     }
   }
 }
-

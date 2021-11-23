@@ -1,7 +1,7 @@
 //DAE Macro Execute, Effect Value = "Macro Name" (time of duration)
 // Target - Self, clear all spell effects in the Action field
 
-if (args[0] === "off") {  //why off? need to check this
+if (args[0] === "off") { 
     let gameUser = game.users.find(u => u.data.character === actor._id)
     let targets = gameUser.targets
     for (let smiteTarget of targets) {

@@ -1,6 +1,6 @@
 
 //DAE effects:
-//  1: macro execute, Effect Value = (optional name of macro, leave blank for item macro) time-of-duration
+//  1: macro execute, Effect Value = (optional name of macro, leave blank for item macro) @attributes.spelldc
 //  2: data.bonuses.mwak.damage, value = 1d6[psychic]
 // Special Expiry set to 1 hit
 // Target - Self, clear all spell effects in the Action field including any saves or damage
@@ -19,7 +19,7 @@ if (args[0] === "off") {
     let targets = Array.from(game.user.targets)
     const GMmacro = game.macros.getName("GM WrathfullSmite")
     for (let smiteTarget of targets) {
-        GMmacro.execute("apply", smiteTarget.id, timeRemaining, args[2])
+        GMmacro.execute("apply", smiteTarget.id, timeRemaining, args[1])
     }
 }
 
@@ -30,7 +30,7 @@ let smiteTarget = canvas.tokens.get(args[1])
 if (args[0] === "each") {
     const flavor = `Use action to roll ${CONFIG.DND5E.abilities["wis"]} DC${args[3]} ${"Wrathfull Smite"}`;
     let saveRoll = (await smiteTarget.actor.rollAbilitySave("wis", { flavor })).total;
-    if (saveRoll < args[3]) {
+    if (saveRoll >= args[3]) {
         await game.cub.removeCondition("Frightened", smiteTarget)
     }
     return;
@@ -41,7 +41,7 @@ if (args[0] === "apply") {
 
     const flavor = `${CONFIG.DND5E.abilities["wis"]} DC${args[3]} ${"Wrathfull Smite"}`;
     let saveRoll = (await smiteTarget.actor.rollAbilitySave("wis", { flavor })).total;
-    if (saveRoll > args[3]) return;
+    if (saveRoll >= args[3]) return;
 
     await game.cub.addCondition("Frightened", smiteTarget)
 
@@ -51,7 +51,7 @@ if (args[0] === "apply") {
                 key: "macro.execute",
                 mode: 0,
                 priority: 20,
-                value: `"GM WrathfullSmite" @token null ${args[3]}`,
+                value: `"GM WrathfullSmite" ${args[1]} ${args[2]} ${args[3]}`,
             }
         ],
         label: "Wrathfull Smite",
